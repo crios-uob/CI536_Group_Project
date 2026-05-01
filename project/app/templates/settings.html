@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <title> CI536 Project</title>
-    <link rel="stylesheet" href="file.css">
+    <link rel="stylesheet" href="{% static 'app/css/file.css' %}">
 </head>
 <body>
 
@@ -12,12 +13,12 @@
 
     <div class = "sidebar">
         <h1> CENJ </h1> <!-- name ??? -->
-        <a href = "file.html">Overview Page</a>
-        <a href = "decks.html">My decks</a>
-        <a href = "Flashcards.html">Flashcards</a>
-        <a href = "analytics.html">Analytics</a>
+        <a href = "{% url 'file' %}">Overview Page</a>
+        <a href = "{% url 'decks' %}">My decks</a>
+        <a href = "{% url 'flashcards' %}">Flashcards</a>
+        <a href = "{% url 'analytics' %}">Analytics</a>
         <a href = "#">About</a>
-        <a href = "settings.html">Settings</a>
+        <a href = "{% url 'settings' %}">Settings</a>
     </div>
 
     <div class="main">
