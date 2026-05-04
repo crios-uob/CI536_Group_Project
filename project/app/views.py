@@ -1,5 +1,6 @@
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from .models import Deck, Card
 
 # Create your views here.
 
@@ -27,41 +28,24 @@ def analytics(request: HttpRequest) -> HttpResponse:
     """
     return render(request, 'analytics.html', {})
 
-def decks(request: HttpRequest) -> HttpResponse:
-    """
-    Loads the decks.html file and renders it with the Django template tags. 
+def decks(request):
+    all_decks = Deck.objects.all()
+    return render(request, 'decks.html', {'decks': all_decks})
 
-    Args:
-        request: Http Request Object
+from .models import Deck
 
-    Returns:
-        HttpResponse Object with rendered HTML 
-    """
-    return render(request, 'decks.html', {})
+def file(request):
+    decks = Deck.objects.all()
+    return render(request, 'file.html', {'decks': decks})
 
-def file(request: HttpRequest) -> HttpResponse:
-    """
-    Loads the file.html file and renders it with the Django template tags. 
+def flashcards(request, deck_id):
+    deck = get_object_or_404(Deck, id=deck_id)
+    cards = Card.objects.filter(deck=deck)
 
-    Args:
-        request: Http Request Object
-
-    Returns:
-        HttpResponse Object with rendered HTML 
-    """
-    return render(request, 'file.html', {})
-
-def flashcards(request: HttpRequest) -> HttpResponse:
-    """
-    Loads the flashcards.html file and renders it with the Django template tags. 
-
-    Args:
-        request: Http Request Object
-
-    Returns:
-        HttpResponse Object with rendered HTML 
-    """
-    return render(request, 'Flashcards.html', {})
+    return render(request, 'Flashcards.html', {
+        'deck': deck,
+        'cards': cards
+    })  
 
 def user_settings(request: HttpRequest) -> HttpResponse:
     """

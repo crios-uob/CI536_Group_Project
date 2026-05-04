@@ -24,6 +24,6 @@ urlpatterns = [
     path('analytics/', views.analytics, name='analytics'),
     path('decks/', views.decks,  name='decks'),
     path('settings/', views.user_settings,  name='settings'),
-    path('flashcards/', views.flashcards,  name='flashcards'),
+    path('flashcards/<int:deck_id>/', views.flashcards,  name='flashcards'),
     path('test/', views.test,  name='test'),
 ]
