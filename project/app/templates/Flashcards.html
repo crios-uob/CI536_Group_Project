@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     {% load static %}
-    <title> CI536 Project</title>
-    <link rel="stylesheet" href="{% static 'app/css/file.css' %}">
+    <title>Flashcards</title>
+    <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
 </head>
    <body>
 
@@ -11,13 +11,14 @@
      <div class="wrapper">
 
          <div class = "sidebar">
-            <h1> CENJ </h1> <!-- name ??? -->
-            <a href = "{% url 'file' %}">Overview Page</a>
+            <h1> FlashLearn </h1>
+            <a href = "{% url 'overview' %}">Overview Page</a>
             <a href = "{% url 'decks' %}">My decks</a>
             <a href = "{% url 'flashcards' %}">Flashcards</a>
             <a href = "{% url 'analytics' %}">Analytics</a>
             <a href = "#">About</a>
             <a href = "{% url 'settings' %}">Settings</a>
+            <a href = "{% url 'account_login' %}">Log In</a>
          </div>
 
          <div class="main">
