@@ -1,0 +1,45 @@
+{% load socialaccount %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign In</title>
+    <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
+</head>
+<body>
+
+<div class="dashboard-hero">
+    <div class="dashboard-card">
+        <h1>Sign In</h1>
+        <p>Sign in with your account or continue with Google.</p>
+
+        <form class="auth-form" action="{% url 'account_login' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button class="btn btn-primary" type="submit">
+                Sign In
+            </button>
+        </form>
+
+        <div class="auth-divider">
+            <span>or</span>
+        </div>
+
+        <div class="auth-actions">
+            <a class="btn btn-secondary" href="{% provider_login_url 'google' process='login' %}">
+                Continue with Google
+            </a>
+        </div>
+
+        <p class="auth-switch">
+            <a href="{% url 'account_signup' %}">
+                Don't have an account yet?
+            </a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
@@ -39,9 +40,9 @@ def decks(request: HttpRequest) -> HttpResponse:
     """
     return render(request, 'decks.html', {})
 
-def file(request: HttpRequest) -> HttpResponse:
+def dashboard(request: HttpRequest) -> HttpResponse:
     """
-    Loads the file.html file and renders it with the Django template tags. 
+    Loads the dashboard.html file and renders it with the Django template tags. 
 
     Args:
         request: Http Request Object
@@ -49,7 +50,19 @@ def file(request: HttpRequest) -> HttpResponse:
     Returns:
         HttpResponse Object with rendered HTML 
     """
-    return render(request, 'file.html', {})
+    return render(request, 'dashboard.html', {})
+
+def overview(request: HttpRequest) -> HttpResponse:
+    """
+    Loads the overview.html file and renders it with the Django template tags. 
+
+    Args:
+        request: Http Request Object
+
+    Returns:
+        HttpResponse Object with rendered HTML 
+    """
+    return render(request, 'overview.html', {})
 
 def flashcards(request: HttpRequest) -> HttpResponse:
     """
@@ -74,3 +87,16 @@ def user_settings(request: HttpRequest) -> HttpResponse:
         HttpResponse Object with rendered HTML 
     """
     return render(request, 'settings.html', {})
+
+@login_required
+def profile(request: HttpRequest) -> HttpResponse:
+    """
+    Loads the profile.html file and renders it with the Django template tags. 
+
+    Args:
+        request: Http Request Object
+
+    Returns:
+        HttpResponse Object with rendered HTML 
+    """
+    return render(request, 'account/profile.html', {})
