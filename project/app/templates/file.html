@@ -12,7 +12,7 @@
      <div class="wrapper">
 
             <div class = "sidebar">
-                <h1> CENJ </h1> <!-- name ??? -->
+                <h1> CENJ </h1>
                 <a href = "{% url 'file' %}">Overview Page</a>
                 <a href = "{% url 'decks' %}">My decks</a>
                 <a href = "{% url 'analytics' %}">Analytics</a>
@@ -52,8 +52,6 @@
 
                         <!-- Optional: card count -->
                         <p>{{ deck.card_set.count }} cards</p>
-
-                        <!-- ✅ THIS is the correct navigation -->
                         <a href="{% url 'flashcards' deck.id %}">Revision</a>
                     </div>
                 {% empty %}

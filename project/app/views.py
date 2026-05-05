@@ -1,6 +1,8 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404
-from .models import Deck, Card
+from django.http import JsonResponse
+import json
+from .models import Result, Deck, Card
 
 # Create your views here.
 
@@ -27,6 +29,43 @@ def analytics(request: HttpRequest) -> HttpResponse:
         HttpResponse Object with rendered HTML 
     """
     return render(request, 'analytics.html', {})
+
+def save_result(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+        score = data.get("score")
+        total = data.get("total")
+        deck_id = data.get("deck_id")
+
+        deck = Deck.objects.get(id=deck_id)
+
+        Result.objects.create(
+            user=request.user,
+            deck=deck,
+            score=score,
+            total=total
+        )
+
+        return JsonResponse({"status": "success"})
+
+def quiz_mc(request, deck_id):
+    deck = get_object_or_404(Deck, id=deck_id)
+    cards = Card.objects.filter(deck=deck)
+
+    return render(request, 'quiz_mc.html', {
+        'deck': deck,
+        'cards': cards
+    })
+
+def quiz(request, deck_id):
+    deck = get_object_or_404(Deck, id=deck_id)
+    cards = Card.objects.filter(deck=deck)
+
+    return render(request, 'quiz.html', {
+        'deck': deck,
+        'cards': cards
+    })
 
 def decks(request):
     all_decks = Deck.objects.all()
