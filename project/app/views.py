@@ -49,6 +49,15 @@ def save_result(request):
 
         return JsonResponse({"status": "success"})
 
+def quiz_mc(request, deck_id):
+    deck = get_object_or_404(Deck, id=deck_id)
+    cards = Card.objects.filter(deck=deck)
+
+    return render(request, 'quiz_mc.html', {
+        'deck': deck,
+        'cards': cards
+    })
+
 def quiz(request, deck_id):
     deck = get_object_or_404(Deck, id=deck_id)
     cards = Card.objects.filter(deck=deck)
