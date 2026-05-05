@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>Quiz</title>
+    <link rel="stylesheet" href="{% static 'app/css/file.css' %}">
+</head>
+<body>
+
+<div class="wrapper">
+
+    <div class="sidebar">
+        <h1>CENJ</h1>
+        <a href="{% url 'file' %}">Overview</a>
+        <a href="{% url 'decks' %}">Decks</a>
+    </div>
+
+    <div class="main">
+
+        <h2>{{ deck.name }} Quiz</h2>
+
+        <div id="quiz-box">
+            <p id="question"></p>
+
+            <input type="text" id="user-answer" placeholder="Your answer">
+            <button onclick="submitAnswer()">Submit</button>
+        </div>
+
+        <p id="feedback"></p>
+        <p id="score"></p>
+
+    </div>
+
+</div>
+
+<script>
+
+    const cards = [
+        {% for card in cards %}
+        {
+            question: "{{ card.question|escapejs }}",
+            answer: "{{ card.answer|escapejs }}"
+        },
+        {% endfor %}
+    ];
+
+    let index = 0;
+    let score = 0;
+
+    function displayQuestion() {
+        if (index >= cards.length) {
+            endQuiz();
+            return;
+        }
+
+        document.getElementById("question").innerText =
+            cards[index].question;
+
+        document.getElementById("user-answer").value = "";
+        document.getElementById("feedback").innerText = "";
+    }
+
+    function submitAnswer() {
+        let userAnswer = document.getElementById("user-answer").value.trim().toLowerCase();
+        let correctAnswer = cards[index].answer.trim().toLowerCase();
+
+        if (userAnswer === correctAnswer) {
+            score++;
+            document.getElementById("feedback").innerText = "Correct!";
+        } else {
+            document.getElementById("feedback").innerText =
+                "Wrong! Answer: " + cards[index].answer;
+        }
+
+        index++;
+        setTimeout(displayQuestion, 1000);
+    }
+
+    function endQuiz() {
+        document.getElementById("quiz-box").innerHTML =
+            "<h3>Quiz Complete!</h3>";
+
+        document.getElementById("score").innerText =
+            "Score: " + score + " / " + cards.length;
+    }
+
+    displayQuestion();
+
+</script>
+
+</body>
+</html>

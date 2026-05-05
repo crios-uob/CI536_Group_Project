@@ -27,6 +27,7 @@
                 <h3>{{ deck.name }}</h3>
 
                 <a href="{% url 'flashcards' deck.id %}">Open Deck</a>
+                <a href="{% url 'quiz' deck.id %}">Start Quiz</a>
             </div>
         {% empty %}
             <p>No decks available.</p>

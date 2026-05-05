@@ -28,6 +28,15 @@ def analytics(request: HttpRequest) -> HttpResponse:
     """
     return render(request, 'analytics.html', {})
 
+def quiz(request, deck_id):
+    deck = get_object_or_404(Deck, id=deck_id)
+    cards = Card.objects.filter(deck=deck)
+
+    return render(request, 'quiz.html', {
+        'deck': deck,
+        'cards': cards
+    })
+
 def decks(request):
     all_decks = Deck.objects.all()
     return render(request, 'decks.html', {'decks': all_decks})
