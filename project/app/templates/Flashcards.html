@@ -2,30 +2,111 @@
 <html lang="en">
 <head>
     {% load static %}
-    <title> CI536 Project</title>
+    <title>CI536 Project</title>
     <link rel="stylesheet" href="{% static 'app/css/file.css' %}">
 </head>
-   <body>
+
+<body>
+
+<div class="wrapper">
+
+    <div class="sidebar">
+        <h1>CENJ</h1>
+
+        <a href="{% url 'file' %}">Overview Page</a>
+        <a href="{% url 'decks' %}">My decks</a>
+        <a href="{% url 'analytics' %}">Analytics</a>
+        <a href="#">About</a>
+        <a href="{% url 'settings' %}">Settings</a>
+    </div>
+
+    <div class="main">
+
+        <!-- Display deck name dynamically -->
+        <h2>{{ deck.name }}</h2>
+
+        <!-- Flashcard display box -->
+        <div id="flashcard-box">
+            <p id="card-text">Loading...</p>
+        </div>
+
+        <!-- Controls -->
+        <button onclick="flipCard()">Reveal</button>
+        <button onclick="prevCard()">Previous</button>
+        <button onclick="nextCard()">Next</button>
+
+    </div>
+
+</div>
+
+<script>
+
+    // Convert Django data into JavaScript array
+    const cards = [
+        {% for card in cards %}
+        {
+            question: "{{ card.question|escapejs }}",
+            answer: "{{ card.answer|escapejs }}"
+        },
+        {% endfor %}
+    ];
+
+    // Track current card index
+    let index = 0;
+
+    // Track whether answer is showing
+    let showingAnswer = false;
 
 
-     <div class="wrapper">
+    // ================= DISPLAY FUNCTION =================
+    function displayCard() {
 
-         <div class = "sidebar">
-            <h1> CENJ </h1> <!-- name ??? -->
-            <a href = "{% url 'file' %}">Overview Page</a>
-            <a href = "{% url 'decks' %}">My decks</a>
-            <a href = "{% url 'flashcards' %}">Flashcards</a>
-            <a href = "{% url 'analytics' %}">Analytics</a>
-            <a href = "#">About</a>
-            <a href = "{% url 'settings' %}">Settings</a>
-         </div>
+        // If no cards exist
+        if (cards.length === 0) {
+            document.getElementById("card-text").innerText = "No cards available.";
+            return;
+        }
 
-         <div class="main">
-             <h2> Make your own Flashcard !!! </h2>
-             <p>Let's Get started with working on your flashcard. </p>
-             <p>You can create, edit and review or completely delete your card by following the instructions below...</p>
-         </div>
+        // Show question or answer depending on state
+        document.getElementById("card-text").innerText =
+            showingAnswer
+                ? cards[index].answer
+                : cards[index].question;
+    }
 
-     </div>
-   </body>
+
+    // ================= FLIP CARD =================
+    function flipCard() {
+        showingAnswer = !showingAnswer; // toggle state
+        displayCard();
+    }
+
+
+    // ================= NEXT CARD =================
+    function nextCard() {
+        if (index < cards.length - 1) {
+            index++;                 // move forward
+            showingAnswer = false;   // reset to question
+            displayCard();
+        }
+    }
+
+
+    // ================= PREVIOUS CARD =================
+    function prevCard() {
+        if (index > 0) {
+            index--;                 // move backward
+            showingAnswer = false;   // reset to question
+            displayCard();
+        }
+    }
+
+
+    // ================= INITIAL LOAD =================
+    // Only run after cards are defined
+    displayCard();
+
+</script>
+
+</body>
 </html>

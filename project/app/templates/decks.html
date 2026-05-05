@@ -14,18 +14,24 @@
         <h1> CENJ </h1> <!-- name ??? -->
         <a href = "{% url 'file' %}">Overview Page</a>
         <a href = "{% url 'decks' %}">My decks</a>
-        <a href = "{% url 'flashcards' %}">Flashcards</a>
         <a href = "{% url 'analytics' %}">Analytics</a>
         <a href = "#">About</a>
         <a href = "{% url 'settings' %}">Settings</a>
     </div>
 
     <div class="main">
-        <h2> Deck Maker</h2>
-        <p>Gather all cards of your choosing to form the perfect revision deck </p>
-        <p>Should you decide to discard a card, You simply need to do as follows....</p>
-    </div>
+        <h2>Deck Maker</h2>
 
+        {% for deck in decks %}
+            <div>
+                <h3>{{ deck.name }}</h3>
+
+                <a href="{% url 'flashcards' deck.id %}">Open Deck</a>
+            </div>
+        {% empty %}
+            <p>No decks available.</p>
+        {% endfor %}
+    </div>
 </div>
 </body>
 </html>
