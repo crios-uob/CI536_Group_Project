@@ -77,12 +77,32 @@
     }
 
     function endQuiz() {
-        document.getElementById("quiz-box").innerHTML =
-            "<h3>Quiz Complete!</h3>";
+    document.getElementById("quiz-box").innerHTML =
+        "<h3>Quiz Complete!</h3>";
 
-        document.getElementById("score").innerText =
-            "Score: " + score + " / " + cards.length;
-    }
+    document.getElementById("score").innerText =
+        "Score: " + score + " / " + cards.length;
+
+    // Send result to Django
+    fetch("/save-result/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken()
+        },
+        body: JSON.stringify({
+            score: score,
+            total: cards.length,
+            deck_id: {{ deck.id }}
+        })
+    });
+}
+
+function getCSRFToken() {
+    return document.cookie.split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        .split('=')[1];
+}
 
     displayQuestion();
 

@@ -26,5 +26,6 @@ urlpatterns = [
     path('settings/', views.user_settings,  name='settings'),
     path('flashcards/<int:deck_id>/', views.flashcards,  name='flashcards'),
     path('quiz/<int:deck_id>/', views.quiz, name='quiz'),
+    path('save-result/', views.save_result, name='save_result'),
     path('test/', views.test,  name='test'),
 ]
