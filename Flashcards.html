@@ -10,7 +10,7 @@
      <div class="wrapper">
 
          <div class = "sidebar">
-             <h1> CENJ </h1> <!-- name ??? -->
+             <h1> FlashLearn </h1>
              <a href = "file.html">Overview Page</a>
              <a href = "decks.html">My decks</a>
              <a href = "Flashcards.html">Flashcards</a>
@@ -20,9 +20,24 @@
          </div>
 
          <div class="main">
-             <h2> Make your own Flashcard !!! </h2>
-             <p>Let's Get started with working on your flashcard. </p>
-             <p>You can create, edit and review or completely delete your card by following the instructions below...</p>
+             <h2> Flashcards </h2>
+             <p>Click on the card to reveal the answers</p>
+
+
+             <div class="card-container">
+               <div class="card" id="card">
+                 <div class="card-front"></div>
+                 <!--- question injected by django -->
+                 <div class="card-back"></div>
+                 <!-- answer injected by django -->
+               </div>
+             </div>
+
+             <div class="card-nav">
+                 <button id="preBtn"> <- Previous </button>
+                 <span id="cardCounter"></span>
+                 <button id="nextBtn"> Next -> </button>
+             </div>
          </div>
 
      </div>
