@@ -3,20 +3,36 @@
 <head>
     {% load static %}
     <title>MC Quiz</title>
+    <link rel="stylesheet" href="{% static 'app/css/file.css' %}">
 </head>
 <body>
 
-<h2>{{ deck.name }} (Multiple Choice)</h2>
+<div class ="wrapper">
 
-<p id="question"></p>
+    <div class="sidebar">
+        <h1>CENJ</h1>
+        <a href="{% url 'file' %}">Overview</a>
+        <a href="{% url 'decks' %}">Decks</a>
+    </div>
 
-<div id="choices"></div>
+    <div class ="main">
+        <h2>{{ deck.name }} (Multiple Choice)</h2>
 
-<p id="feedback"></p>
-<p id="score"></p>
+        <div id="quiz-box">
+            <p id="question"></p>
+
+            <div id="choices"></div>
+        </div>
+        <p id="feedback"></p>
+        <p id="score"></p>
+    
+    </div>
+</div>
+
 
 <script>
 
+// ================= DATA =================
 const cards = [
     {% for card in cards %}
     {
@@ -26,47 +42,60 @@ const cards = [
     {% endfor %}
 ];
 
+// ================= STATE =================
 let index = 0;
 let score = 0;
 
-// Generate fake options
+// ================= GENERATE CHOICES =================
+// creates 4 options including the correct answer
 function generateChoices(correctAnswer) {
     let options = [correctAnswer];
 
+    // add random incorrect answers from other cards
     while (options.length < 4) {
         let randomCard = cards[Math.floor(Math.random() * cards.length)];
         let option = randomCard.answer;
 
+        // avoid duplicates
         if (!options.includes(option)) {
             options.push(option);
         }
     }
 
+    // shuffle options randomly
     return options.sort(() => Math.random() - 0.5);
 }
 
+// ================= DISPLAY QUESTION =================
 function displayQuestion() {
     if (index >= cards.length) {
         endQuiz();
         return;
     }
 
+    // show question text
     document.getElementById("question").innerText =
         cards[index].question;
 
+    // clear previous buttons
     const choicesDiv = document.getElementById("choices");
     choicesDiv.innerHTML = "";
 
+    // generate answer choices
     let options = generateChoices(cards[index].answer);
 
+    // create button for each option
     options.forEach(option => {
         let btn = document.createElement("button");
         btn.innerText = option;
+
+        // check answer when clicked
         btn.onclick = () => checkAnswer(option);
         choicesDiv.appendChild(btn);
     });
 }
 
+// ================= CHECK ANSWER =================
 function checkAnswer(selected) {
     let correct = cards[index].answer;
 
@@ -82,6 +111,7 @@ function checkAnswer(selected) {
     setTimeout(displayQuestion, 1000);
 }
 
+// ================= END QUIZ =================
 function endQuiz() {
     document.getElementById("question").innerText = "Quiz Finished!";
     document.getElementById("choices").innerHTML = "";
@@ -103,12 +133,13 @@ function endQuiz() {
     });
 }
 
+// ================= CSRF TOKEN =================
 function getCSRFToken() {
     return document.cookie.split('; ')
         .find(row => row.startsWith('csrftoken='))
         .split('=')[1];
 }
-
+// start quiz
 displayQuestion();
 
 </script>

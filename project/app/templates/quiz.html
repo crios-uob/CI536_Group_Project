@@ -34,7 +34,8 @@
 </div>
 
 <script>
-
+    // ================= DATA FROM DJANGO =================
+    // flashcard data
     const cards = [
         {% for card in cards %}
         {
@@ -43,52 +44,66 @@
         },
         {% endfor %}
     ];
+    
+    // ================= STATE =================
+    let index = 0; // current question index
+    let score = 0; // user score tracker
 
-    let index = 0;
-    let score = 0;
-
+    // ================= DISPLAY QUESTION =================
     function displayQuestion() {
+
         if (index >= cards.length) {
             endQuiz();
             return;
         }
 
+        // show question or answer depending on state
         document.getElementById("question").innerText =
             cards[index].question;
 
+        // reset input + feedback for next question
         document.getElementById("user-answer").value = "";
         document.getElementById("feedback").innerText = "";
     }
 
+    // ================= SUBMIT ANSWER =================
     function submitAnswer() {
+        // get user input and normalise (case insensitive)
         let userAnswer = document.getElementById("user-answer").value.trim().toLowerCase();
         let correctAnswer = cards[index].answer.trim().toLowerCase();
 
+        // compare answers
         if (userAnswer === correctAnswer) {
-            score++;
+            score++; // if score correct add 1
             document.getElementById("feedback").innerText = "Correct!";
         } else {
             document.getElementById("feedback").innerText =
                 "Wrong! Answer: " + cards[index].answer;
         }
 
+        // after short delay move to next question
         index++;
         setTimeout(displayQuestion, 1000);
     }
 
+    // ================= END QUIZ =================
     function endQuiz() {
+    
+    //show completion message
     document.getElementById("quiz-box").innerHTML =
         "<h3>Quiz Complete!</h3>";
 
+    // show final score
     document.getElementById("score").innerText =
         "Score: " + score + " / " + cards.length;
 
+    // ================= SAVE RESULT =================
     // Send result to Django
     fetch("/save-result/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": getCSRFToken()
+            "X-CSRFToken": getCSRFToken() // needed for Django security
         },
         body: JSON.stringify({
             score: score,
@@ -97,14 +112,16 @@
         })
     });
 }
-
+// ================= CSRF HELPER =================
+// extract CSRF token from browser cookies for secure POST requests
 function getCSRFToken() {
     return document.cookie.split('; ')
         .find(row => row.startsWith('csrftoken='))
         .split('=')[1];
 }
 
-    displayQuestion();
+// start quiz on page load
+displayQuestion();
 
 </script>
 
