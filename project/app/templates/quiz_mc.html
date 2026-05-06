@@ -3,113 +3,147 @@
 <head>
     {% load static %}
     <title>MC Quiz</title>
+    <link rel="stylesheet" href="{% static 'app/css/file.css' %}">
 </head>
 <body>
 
-<h2>{{ deck.name }} (Multiple Choice)</h2>
+<div class ="wrapper">
 
-<p id="question"></p>
+    <div class="sidebar">
+        <h1>CENJ</h1>
+        <a href="{% url 'file' %}">Overview</a>
+        <a href="{% url 'decks' %}">Decks</a>
+    </div>
 
-<div id="choices"></div>
+    <div class ="main">
 
-<p id="feedback"></p>
-<p id="score"></p>
+        <div id="deck-data" data-deck-id="{{ deck.id }}"></div>
 
+        <h2>{{ deck.name }} (Multiple Choice)</h2>
+
+        <div id="quiz-box">
+            <p id="question"></p>
+
+            <div id="choices"></div>
+        </div>
+        <p id="feedback"></p>
+        <p id="score"></p>
+    
+    </div>
+</div>
+
+{{ cards|json_script:"cards-data" }}
 <script>
 
-const cards = [
-    {% for card in cards %}
-    {
-        question: "{{ card.question|escapejs }}",
-        answer: "{{ card.answer|escapejs }}"
-    },
-    {% endfor %}
-];
+    // Get deck ID from HTML data attribute
+    const deckId = document
+        .getElementById("deck-data")
+        .dataset.deckId;
 
-let index = 0;
-let score = 0;
+    // ================= DATA =================
+    const cards = JSON.parse(
+        document.getElementById("cards-data").textContent
+    );
 
-// Generate fake options
-function generateChoices(correctAnswer) {
-    let options = [correctAnswer];
+    // ================= STATE =================
+    let index = 0;
+    let score = 0;
 
-    while (options.length < 4) {
-        let randomCard = cards[Math.floor(Math.random() * cards.length)];
-        let option = randomCard.answer;
+    // ================= GENERATE CHOICES =================
+    // creates 4 options including the correct answer
+    function generateChoices(correctAnswer) {
+        let options = [correctAnswer];
 
-        if (!options.includes(option)) {
-            options.push(option);
+        // add random incorrect answers from other cards
+        while (options.length < 4) {
+            let randomCard = cards[Math.floor(Math.random() * cards.length)];
+            let option = randomCard.answer;
+
+            // avoid duplicates
+            if (!options.includes(option)) {
+                options.push(option);
+            }
         }
+
+        // shuffle options randomly
+        return options.sort(() => Math.random() - 0.5);
     }
 
-    return options.sort(() => Math.random() - 0.5);
-}
+    // ================= DISPLAY QUESTION =================
+    function displayQuestion() {
+        if (index >= cards.length) {
+            endQuiz();
+            return;
+        }
 
-function displayQuestion() {
-    if (index >= cards.length) {
-        endQuiz();
-        return;
+        // show question text
+        document.getElementById("question").innerText =
+            cards[index].question;
+
+        // clear previous buttons
+        const choicesDiv = document.getElementById("choices");
+        choicesDiv.innerHTML = "";
+
+        // generate answer choices
+        let options = generateChoices(cards[index].answer);
+
+        // create button for each option
+        options.forEach(option => {
+            let btn = document.createElement("button");
+            btn.innerText = option;
+
+            // check answer when clicked
+            btn.onclick = () => checkAnswer(option);
+            choicesDiv.appendChild(btn);
+        });
     }
 
-    document.getElementById("question").innerText =
-        cards[index].question;
+    // ================= CHECK ANSWER =================
+    function checkAnswer(selected) {
+        let correct = cards[index].answer;
 
-    const choicesDiv = document.getElementById("choices");
-    choicesDiv.innerHTML = "";
+        if (selected === correct) {
+            score++;
+            document.getElementById("feedback").innerText = "Correct!";
+        } else {
+            document.getElementById("feedback").innerText =
+                "Wrong! Answer: " + correct;
+        }
 
-    let options = generateChoices(cards[index].answer);
-
-    options.forEach(option => {
-        let btn = document.createElement("button");
-        btn.innerText = option;
-        btn.onclick = () => checkAnswer(option);
-        choicesDiv.appendChild(btn);
-    });
-}
-
-function checkAnswer(selected) {
-    let correct = cards[index].answer;
-
-    if (selected === correct) {
-        score++;
-        document.getElementById("feedback").innerText = "Correct!";
-    } else {
-        document.getElementById("feedback").innerText =
-            "Wrong! Answer: " + correct;
+        index++;
+        setTimeout(displayQuestion, 1000);
     }
 
-    index++;
-    setTimeout(displayQuestion, 1000);
-}
+    // ================= END QUIZ =================
+    function endQuiz() {
+        document.getElementById("question").innerText = "Quiz Finished!";
+        document.getElementById("choices").innerHTML = "";
+        document.getElementById("score").innerText =
+            "Score: " + score + " / " + cards.length;
 
-function endQuiz() {
-    document.getElementById("question").innerText = "Quiz Finished!";
-    document.getElementById("choices").innerHTML = "";
-    document.getElementById("score").innerText =
-        "Score: " + score + " / " + cards.length;
+        // Save result
+        fetch("/save-result/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken()
+            },
+            body: JSON.stringify({
+                score: score,
+                total: cards.length,
+                deck_id: deckId
+            })
+        });
+    }
 
-    // Save result
-    fetch("/save-result/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCSRFToken()
-        },
-        body: JSON.stringify({
-            score: score,
-            total: cards.length,
-            deck_id: {{ deck.id }}
-        })
-    });
-}
-
-function getCSRFToken() {
-    return document.cookie.split('; ')
-        .find(row => row.startsWith('csrftoken='))
-        .split('=')[1];
-}
-
-displayQuestion();
+    // ================= CSRF TOKEN =================
+    function getCSRFToken() {
+        return document.cookie.split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            .split('=')[1];
+    }
+    // start quiz
+    displayQuestion();
 
 </script>
 

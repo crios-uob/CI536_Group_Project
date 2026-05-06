@@ -39,23 +39,18 @@
 
 </div>
 
+{{ cards|json_script:"cards-data" }}
 <script>
 
+    // ================= DATA FROM DJANGO =================
     // Convert Django data into JavaScript array
-    const cards = [
-        {% for card in cards %}
-        {
-            question: "{{ card.question|escapejs }}",
-            answer: "{{ card.answer|escapejs }}"
-        },
-        {% endfor %}
-    ];
+    const cards = JSON.parse(
+    document.getElementById("cards-data").textContent
+);
 
-    // Track current card index
-    let index = 0;
-
-    // Track whether answer is showing
-    let showingAnswer = false;
+    // ================= STATE VARIABLES =================
+    let index = 0;  // track current card index
+    let showingAnswer = false;  // track whether answer is showing
 
 
     // ================= DISPLAY FUNCTION =================
@@ -103,7 +98,7 @@
 
 
     // ================= INITIAL LOAD =================
-    // Only run after cards are defined
+    // Run once when page loads
     displayCard();
 
 </script>
