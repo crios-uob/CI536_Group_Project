@@ -17,6 +17,8 @@
 
     <div class="main">
 
+        <div id="deck-data" data-deck-id="{{ deck.id }}"></div>
+
         <h2>{{ deck.name }} Quiz</h2>
 
         <div id="quiz-box">
@@ -33,17 +35,19 @@
 
 </div>
 
+{{ cards|json_script:"cards-data" }}
 <script>
+
+    // Get deck ID from HTML data attribute
+    const deckId = document
+        .getElementById("deck-data")
+        .dataset.deckId;
+
     // ================= DATA FROM DJANGO =================
     // flashcard data
-    const cards = [
-        {% for card in cards %}
-        {
-            question: "{{ card.question|escapejs }}",
-            answer: "{{ card.answer|escapejs }}"
-        },
-        {% endfor %}
-    ];
+    const cards = JSON.parse(
+    document.getElementById("cards-data").textContent
+);
     
     // ================= STATE =================
     let index = 0; // current question index
@@ -89,39 +93,39 @@
     // ================= END QUIZ =================
     function endQuiz() {
     
-    //show completion message
-    document.getElementById("quiz-box").innerHTML =
-        "<h3>Quiz Complete!</h3>";
+        //show completion message
+        document.getElementById("quiz-box").innerHTML =
+            "<h3>Quiz Complete!</h3>";
 
-    // show final score
-    document.getElementById("score").innerText =
-        "Score: " + score + " / " + cards.length;
+        // show final score
+        document.getElementById("score").innerText =
+            "Score: " + score + " / " + cards.length;
 
-    // ================= SAVE RESULT =================
-    // Send result to Django
-    fetch("/save-result/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCSRFToken() // needed for Django security
-        },
-        body: JSON.stringify({
-            score: score,
-            total: cards.length,
-            deck_id: {{ deck.id }}
-        })
-    });
-}
-// ================= CSRF HELPER =================
-// extract CSRF token from browser cookies for secure POST requests
-function getCSRFToken() {
-    return document.cookie.split('; ')
-        .find(row => row.startsWith('csrftoken='))
-        .split('=')[1];
-}
+        // ================= SAVE RESULT =================
+        // Send result to Django
+        fetch("/save-result/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken() // needed for Django security
+            },
+            body: JSON.stringify({
+                score: score,
+                total: cards.length,
+                deck_id: deckId
+            })
+        });
+    }
+    // ================= CSRF HELPER =================
+    // extract CSRF token from browser cookies for secure POST requests
+    function getCSRFToken() {
+        return document.cookie.split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            .split('=')[1];
+    }
 
-// start quiz on page load
-displayQuestion();
+    // start quiz on page load
+    displayQuestion();
 
 </script>
 

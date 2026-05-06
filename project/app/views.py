@@ -51,7 +51,10 @@ def save_result(request):
 
 def quiz_mc(request, deck_id):
     deck = get_object_or_404(Deck, id=deck_id)
-    cards = Card.objects.filter(deck=deck)
+    cards = list(
+    Card.objects.filter(deck=deck)
+    .values("question", "answer")
+)
 
     return render(request, 'quiz_mc.html', {
         'deck': deck,
@@ -60,7 +63,10 @@ def quiz_mc(request, deck_id):
 
 def quiz(request, deck_id):
     deck = get_object_or_404(Deck, id=deck_id)
-    cards = Card.objects.filter(deck=deck)
+    cards = list(
+    Card.objects.filter(deck=deck)
+    .values("question", "answer")
+)
 
     return render(request, 'quiz.html', {
         'deck': deck,
@@ -79,7 +85,10 @@ def file(request):
 
 def flashcards(request, deck_id):
     deck = get_object_or_404(Deck, id=deck_id)
-    cards = Card.objects.filter(deck=deck)
+    cards = list(
+    Card.objects.filter(deck=deck)
+    .values("question", "answer")
+)
 
     return render(request, 'Flashcards.html', {
         'deck': deck,

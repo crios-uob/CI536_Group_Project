@@ -39,18 +39,14 @@
 
 </div>
 
+{{ cards|json_script:"cards-data" }}
 <script>
 
     // ================= DATA FROM DJANGO =================
     // Convert Django data into JavaScript array
-    const cards = [
-        {% for card in cards %}
-        {
-            question: "{{ card.question|escapejs }}", // front of card
-            answer: "{{ card.answer|escapejs }}"  // back of card
-        },
-        {% endfor %}
-    ];
+    const cards = JSON.parse(
+    document.getElementById("cards-data").textContent
+);
 
     // ================= STATE VARIABLES =================
     let index = 0;  // track current card index
