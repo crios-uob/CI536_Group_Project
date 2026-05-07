@@ -22,11 +22,20 @@
     </div>
 
     <div class="main">
-        <h2> Deck Maker</h2>
-        <p>Gather all cards of your choosing to form the perfect revision deck </p>
-        <p>Should you decide to discard a card, You simply need to do as follows....</p>
-    </div>
+        <h2>Deck Maker</h2>
 
+        {% for deck in decks %}
+            <div>
+                <h3>{{ deck.name }}</h3>
+
+                <a href="{% url 'flashcards' deck.id %}">Open Deck</a>
+                <a href="{% url 'quiz_mc' deck.id %}">MC Quiz</a>
+                <a href="{% url 'quiz' deck.id %}">Text Quiz</a>
+            </div>
+        {% empty %}
+            <p>No decks available.</p>
+        {% endfor %}
+    </div>
 </div>
 </body>
 </html>
