@@ -14,6 +14,7 @@
         <h1> CENJ </h1> <!-- name ??? -->
         <a href = "{% url 'file' %}">Overview Page</a>
         <a href = "{% url 'decks' %}">My decks</a>
+        <a href = "{% url 'flashcards' %}">Flashcards</a>
         <a href = "{% url 'analytics' %}">Analytics</a>
         <a href = "#">About</a>
         <a href = "{% url 'settings' %}">Settings</a>
@@ -21,18 +22,23 @@
 
     <div class="main">
         <h2>Deck Maker</h2>
+        <p>Choose a deck to study or take a quiz.</p>
 
+        <div class="decks">
         {% for deck in decks %}
-            <div>
+            <div class="deck-cards">
                 <h3>{{ deck.name }}</h3>
 
+                <div class="deck-links">
                 <a href="{% url 'flashcards' deck.id %}">Open Deck</a>
                 <a href="{% url 'quiz_mc' deck.id %}">MC Quiz</a>
                 <a href="{% url 'quiz' deck.id %}">Text Quiz</a>
+                </div>
             </div>
         {% empty %}
             <p>No decks available.</p>
         {% endfor %}
+        </div>
     </div>
 </div>
 </body>
