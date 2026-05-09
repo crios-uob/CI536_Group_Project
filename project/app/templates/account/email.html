@@ -1,0 +1,78 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Email</title>
+    <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
+</head>
+<body>
+
+<div class="dashboard-hero">
+    <div class="dashboard-card">
+        <h1>Manage Email</h1>
+        <p>View, add, or change the email addresses linked to your account.</p>
+
+        {% if user.emailaddress_set.all %}
+            <form class="auth-form" action="{% url 'account_email' %}" method="post">
+                {% csrf_token %}
+
+                <h3>Email Addresses</h3>
+
+                {% for emailaddress in user.emailaddress_set.all %}
+                    <p>
+                        <label>
+                            <input
+                                type="radio"
+                                name="email"
+                                value="{{ emailaddress.email }}"
+                                {% if emailaddress.primary or user.emailaddress_set.all|length == 1 %}
+                                    checked
+                                {% endif %}
+                            >
+
+                            {{ emailaddress.email }}
+
+                            {% if emailaddress.primary %}
+                                <strong>Primary</strong>
+                            {% else %}
+                                <strong>Non-Primary</strong>
+                            {% endif %}
+                        </label>
+                    </p>
+                {% endfor %}
+
+                <button class="btn btn-primary" type="submit" name="action_primary">
+                    Make Primary
+                </button>
+
+                <button class="btn btn-primary" type="submit" name="action_remove">
+                    Remove
+                </button>
+            </form>
+        {% else %}
+            <p>No email addresses are currently linked to your account.</p>
+        {% endif %}
+
+        <form class="auth-form" action="{% url 'account_email' %}" method="post">
+            {% csrf_token %}
+
+            <h3>Add Email Address</h3>
+
+            {{ form.as_p }}
+
+            <button class="btn btn-primary" type="submit" name="action_add">
+                Add Email
+            </button>
+        </form>
+
+        <p class="auth-switch">
+            <a href="{% url 'profile' %}">
+                Back to Profile
+            </a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
