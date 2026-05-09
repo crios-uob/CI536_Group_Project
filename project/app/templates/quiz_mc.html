@@ -3,15 +3,16 @@
 <head>
     {% load static %}
     <title>MC Quiz</title>
-    <link rel="stylesheet" href="{% static 'app/css/file.css' %}">
+    <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
 </head>
 <body>
 
 <div class ="wrapper">
 
     <div class="sidebar">
-        <h1>CENJ</h1>
-        <a href="{% url 'file' %}">Overview</a>
+        <h1>FlashLearn</h1>
+        <a href="{% url 'overview' %}">Overview</a>
+        <a href = "{% url 'profile' %}">Profile</a>
         <a href="{% url 'decks' %}">Decks</a>
     </div>
 

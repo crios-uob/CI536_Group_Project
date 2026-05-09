@@ -21,15 +21,19 @@ from app import views
 urlpatterns = [
     path('', views.dashboard,  name='dashboard'),
     path('admin/', admin.site.urls),
+
     path('accounts/', include('allauth.urls')),
-    path("accounts/profile/", views.profile, name="profile"),
+
+    path("profile/", views.profile, name="profile"),
     path('overview/', views.overview,  name='overview'),
     path('analytics/', views.analytics, name='analytics'),
     path('decks/', views.decks,  name='decks'),
     path('settings/', views.user_settings,  name='settings'),
+
     path('flashcards/<int:deck_id>/', views.flashcards,  name='flashcards'),
     path('quiz/<int:deck_id>/', views.quiz, name='quiz'),
     path('quiz-mc/<int:deck_id>/', views.quiz_mc, name='quiz_mc'),
     path('save-result/', views.save_result, name='save_result'),
+
     path('test/', views.test,  name='test'),
 ]

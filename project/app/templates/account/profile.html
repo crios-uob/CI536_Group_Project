@@ -1,16 +1,60 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% load static %}
     <title>Profile</title>
     <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
 </head>
 <body>
-    <p>You are logged in as {{ request.user.username }}</p>
 
-    <a href="{% url 'account_login' %}">Log In</a>
-    
+<div class="dashboard-hero">
+    <div class="dashboard-card">
+        <h1>Profile</h1>
+        <p>Manage your account information.</p>
+
+        <div class="auth-form">
+
+            <p>
+                <strong>Email:</strong><br>
+                {{ user.email }}
+            </p>
+
+            <p>
+                <strong>Username:</strong><br>
+                {{ user.username }}
+            </p>
+
+            <p>
+                <strong>Password:</strong><br>
+                <span>
+                    Your actual password cannot be displayed for security reasons.
+                </span>
+            </p>
+
+            <hr>
+
+            <p class="auth-switch">
+                <a href="{% url 'account_email' %}">
+                    Change Email
+                </a>
+            </p>
+
+            <p class="auth-switch">
+                <a href="{% url 'account_change_password' %}">
+                    Change Password
+                </a>
+            </p>
+
+            <p class="auth-switch">
+                <a href="{% url 'account_logout' %}">
+                    Sign Out
+                </a>
+            </p>
+
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
