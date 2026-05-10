@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="en">
     <head>
         {% load static %}
         <title> CI536 Project</title>
@@ -11,20 +11,21 @@
 
      <div class="wrapper">
 
-            <div class = "sidebar">
-                <h1> CENJ </h1>
-                <a href = "{% url 'file' %}">Overview Page</a>
-                <a href = "{% url 'decks' %}">My decks</a>
-                <a href = "{% url 'analytics' %}">Analytics</a>
-                <a href = "#">About</a>
-                <a href = "{% url 'settings' %}">Settings</a>
-            </div>
+         <div class = "sidebar">
+             <h1> FlashLearn </h1>
+             <a href = "{% url 'file' %}">Overview Page</a>
+             <a href = "{% url 'decks' %}">My decks</a>
+
+             <a href = "{% url 'analytics' %}">Analytics</a>
+             <a href = "#">About</a>
+             <a href = "{% url 'settings' %}">Settings</a>
+         </div>
 
         <div class = "main">
 
 
             <h2> Overview Page</h2>
-            <p>Welcome (username)</p>
+            <p>Welcome, {{ user.username }}</p>
 
             <!-- statistics-->
              <div class="stats">
