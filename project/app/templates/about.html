@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title> CI536 Project</title>
+    <link rel="stylesheet" href="{% static 'app/css/file.css' %}">
+</head>
+<body>
+
+
+<div class="wrapper">
+
+    <div class = "sidebar">
+        <h1> FlashLearn </h1>
+        <a href = "{% url 'file' %}">Overview Page</a>
+        <a href = "{% url 'decks' %}">My Decks</a>
+        <a href = "{% url 'analytics' %}">Analytics</a>
+        <a href = "#">About</a>
+        <a href = "{% url 'settings' %}">Settings</a>
+    </div>
+
+    <div class="main">
+        <h2> About FlashLearn</h2>
+        <p> FlashLearn is a web-based flashcard and quiz application designed to make revision engaging and effective</p>
+
+        <div class="about-section">
+            <h3>What We Do</h3>
+            <p>FlashLearn helps students and learners of all kinds revise through interactive flashcards and quizzes. The app encourages active recall over passive reading  - helping you retain information more effectively.</p>
+            <p>Choose from a range of themed decks or create your own decks tailored to your studies</p>
+        </div>
+
+        <div class="about-section">
+            <h3>The Team</h3>
+            <div class="team-grid">
+                <div class="team-card">
+                    <h4>Charles</h4>
+                    <p>Backend Lead</p>
+                    <span>User authentication, db models and API routes</span>
+                </div>
+                <div class="team-card">
+                    <h4>Jason</h4>
+                    <p>Frontend Lead</p>
+                    <span>UI pages,styling and UX flow</span>
+                </div>
+                <div class="team-card">
+                    <h4>Neve</h4>
+                    <p>Hybrid</p>
+                    <span> Report Management, Analytics, testing and debugging</span>
+                </div>
+                <div class="team-card">
+                    <h4>Emma</h4>
+                    <p>Hybrid</p>
+                    <span> Flashcard logic and quiz system design </span>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    </div>
+
+</div>
+</body>
+</html>
