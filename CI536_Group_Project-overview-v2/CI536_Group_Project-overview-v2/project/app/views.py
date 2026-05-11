@@ -1,11 +1,8 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.db.models.functions import TruncDate
-from django.db.models import Avg
 import json
-from .models import Result, Deck, Card, CardAttempt
+from .models import Result, Deck, Card
 
 # Create your views here.
 
@@ -21,47 +18,17 @@ def test(request: HttpRequest) -> HttpResponse:
     """
     return render(request, 'test.html', {'name': 'Jason'})
 
-@login_required
 def analytics(request: HttpRequest) -> HttpResponse:
-    results = Result.objects.filter(user=request.user)
+    """
+    Loads the analytics.html file and renders it with the Django template tags. 
 
-    total_quizzes = results.count()
-    #For accuracy % calcs
-    total_correct = sum(result.score for result in results)
-    total_questions = sum(result.total for result in results)
-    accuracy = 0
+    Args:
+        request: Http Request Object
 
-    if total_questions > 0:
-        accuracy = round((total_correct / total_questions) * 100, 2) #accuracy % to 2 d.p.
-
-    #Data for graphs
-    #For score history
-    daily_results = (
-        results
-        .annotate(day=TruncDate("date_taken")) #date only, time not required
-        .values("day")
-        .annotate(avg_score=Avg("score")) #average score by date
-        .order_by("day") #ascending order
-    )
-
-    labels = [] #list for dates
-    scores = [] #list for avg scores
-
-    #Assigning to lists
-    for entry in daily_results:
-        labels.append(str(entry["day"])) #into string
-        scores.append(round(entry["avg_score"], 2)) 
-
-    context = { 
-        "total_quizzes": total_quizzes,
-        "total_correct": total_correct,
-        "total_questions": total_questions,
-        "accuracy": accuracy,
-        "labels": labels,
-        "scores": scores,
-    }
-
-    return render(request, 'analytics.html', context)
+    Returns:
+        HttpResponse Object with rendered HTML 
+    """
+    return render(request, 'analytics.html', {})
 
 def save_result(request):
     if request.method == "POST":

@@ -39,6 +39,6 @@ class Migration(migrations.Migration):
                 ('date_taken', models.DateTimeField(auto_now_add=True)),
                 ('deck', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.deck')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ]
-        )
+            ],
+        ),
     ]
