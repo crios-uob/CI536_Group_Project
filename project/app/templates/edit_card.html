@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>Edit Card</title>
+    <link rel="stylesheet" href="{% static 'app/css/file.css' %}">
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <div class="sidebar">
+        <h1>CENJ</h1>
+
+        <a href="{% url 'file' %}">Overview</a>
+        <a href="{% url 'decks' %}">My Decks</a>
+    </div>
+
+    <div class="main">
+
+        <h2>Edit Card</h2>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <!-- Existing question -->
+            <label>Question:</label><br>
+            <input
+                type="text"
+                name="question"
+                value="{{ card.question }}"
+                required
+            ><br><br>
+
+            <!-- Existing answer -->
+            <label>Answer:</label><br>
+            <input
+                type="text"
+                name="answer"
+                value="{{ card.answer }}"
+                required
+            ><br><br>
+
+            <button type="submit">Save Changes</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

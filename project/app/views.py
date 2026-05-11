@@ -87,7 +87,7 @@ def flashcards(request, deck_id):
     deck = get_object_or_404(Deck, id=deck_id)
     cards = list(
     Card.objects.filter(deck=deck)
-    .values("question", "answer")
+    .values("id", "question", "answer")
 )
 
     return render(request, 'Flashcards.html', {
@@ -142,6 +142,43 @@ def add_card(request, deck_id):
     return render(request, 'add_card.html', {
         'deck': deck
     })
+
+def edit_card(request, card_id):
+
+    # Get card object
+    card = get_object_or_404(Card, id=card_id)
+
+    # If form submitted
+    if request.method == "POST":
+
+        # Update card values
+        card.question = request.POST.get("question")
+        card.answer = request.POST.get("answer")
+
+        # Save changes to database
+        card.save()
+
+        # Redirect back to flashcards page
+        return redirect('flashcards', deck_id=card.deck.id)
+
+    # Load page normally
+    return render(request, 'edit_card.html', {
+        'card': card
+    })
+
+def delete_card(request, card_id):
+
+    # Get card object
+    card = get_object_or_404(Card, id=card_id)
+
+    # Save deck ID before deletion
+    deck_id = card.deck.id
+
+    # Delete card
+    card.delete()
+
+    # Redirect back to flashcards
+    return redirect('flashcards', deck_id=deck_id)
 
 def user_settings(request: HttpRequest) -> HttpResponse:
     """
