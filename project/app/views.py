@@ -69,17 +69,9 @@ def save_result(request):
         return JsonResponse({"status": "success"})
         
 
-def overview(request: HttpRequest) -> HttpResponse:
-    """
-    Loads the overview.html file and renders it with the Django template tags. 
-
-    Args:
-        request: Http Request Object
-
-    Returns:
-        HttpResponse Object with rendered HTML 
-    """
-    return render(request, 'overview.html', {})
+def overview(request):
+    decks = Deck.objects.all()
+    return render(request, 'overview.html', {'decks': decks})
 
 def quiz_mc(request, deck_id):
     deck = get_object_or_404(Deck, id=deck_id)
