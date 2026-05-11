@@ -94,9 +94,5 @@ body {
               border: 1px solid #ddd;
               border-radius: 8px;
               padding: 20px;
-              width: 260px;
-}
-.deck-card a {
-    display: block;
-    margin-top: 8px;
+              width: 200px;
 }

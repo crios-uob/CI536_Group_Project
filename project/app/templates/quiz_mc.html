@@ -3,17 +3,17 @@
 <head>
     {% load static %}
     <title>MC Quiz</title>
-    <link rel="stylesheet" href="{% static 'app/css/file.css' %}">
+    <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
 </head>
 <body>
 
 <div class ="wrapper">
 
-    <div class = "sidebar">
-        <h1> FlashLearn </h1>
-        <a href = "{% url 'file' %}">Overview Page</a>
-        <a href = "{% url 'decks' %}">My decks</a>
-
+    <div class="sidebar">
+        <h1>FlashLearn</h1>
+        <a href="{% url 'overview' %}">Overview</a>
+        <a href = "{% url 'profile' %}">Profile</a>
+        <a href="{% url 'decks' %}">Decks</a>
         <a href = "{% url 'analytics' %}">Analytics</a>
         <a href = "#">About</a>
         <a href = "{% url 'settings' %}">Settings</a>
