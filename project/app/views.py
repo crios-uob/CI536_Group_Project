@@ -1,5 +1,5 @@
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 import json
 from .models import Result, Deck, Card
@@ -94,6 +94,27 @@ def flashcards(request, deck_id):
         'deck': deck,
         'cards': cards
     })  
+
+def create_deck(request):
+
+    # If user submitted the form
+    if request.method == "POST":
+
+        # Get form data from HTML inputs
+        name = request.POST.get("name")
+        category = request.POST.get("category")
+
+        # Create new deck in database
+        Deck.objects.create(
+            name=name,
+            category=category
+        )
+
+        # Redirect user back to decks page
+        return redirect('decks')
+
+    # If page is opened normally
+    return render(request, 'create_deck.html')
 
 def user_settings(request: HttpRequest) -> HttpResponse:
     """
