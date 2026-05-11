@@ -1,15 +1,26 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
+from django.utils import timezone
 
 class Deck(models.Model):
     name = models.CharField(max_length=100)
     category= models.CharField(max_length=50)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="decks",
+    )
 
     def __str__(self):
         return self.name
     
 class Card(models.Model):
-    deck = models.ForeignKey(Deck, on_delete=models.CASCADE)
+    deck = models.ForeignKey(
+        Deck, 
+        on_delete=models.CASCADE,
+        related_name='cards'
+    )
     question = models.CharField(max_length=255)
     answer = models.CharField(max_length=255)
 
@@ -25,3 +36,38 @@ class Result(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.deck.name} - {self.score}"
+
+class CardProgress(models.Model):
+    WRONG = 1
+    HARD = 2
+    GOOD = 3
+    EASY = 4
+
+    RATINGS = [
+        (WRONG, 'Wrong'),
+        (HARD, 'Hard'),
+        (GOOD, 'Good'),
+        (EASY, 'Easy'),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    card = models.ForeignKey(
+        Card, 
+        on_delete=models.CASCADE
+    )
+
+    ease_factor = models.FloatField(default=2.5)
+    interval_days = models.PositiveIntegerField(default=0)
+    repetitions = models.PositiveIntegerField(default=0)
+
+    due_at = models.DateTimeField(default=timezone.now)
+    last_reviewed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('user','card')
+
+    def is_due(self) -> bool:
+        return self.due_at <= timezone.now()

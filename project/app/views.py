@@ -1,9 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 import json
-from .models import Result, Deck, Card
+from models import Result, Deck, Card, CardProgress
+from decks.services import review_card
 
 # Create your views here.
 
@@ -67,7 +68,18 @@ def save_result(request):
         )
         
         return JsonResponse({"status": "success"})
-        
+
+def submit_review(request, progress_id):
+    progress = get_object_or_404(
+        CardProgress,
+        id=progress_id,
+        user=request.user,
+    )
+
+    rating = int(request.POST["rating"])
+    review_card(progress, rating)
+
+    return redirect("study_deck", deck_id=progress.card.deck_id)
 
 def overview(request: HttpRequest) -> HttpResponse:
     """
