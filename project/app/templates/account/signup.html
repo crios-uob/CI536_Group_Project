@@ -1,0 +1,35 @@
+{% load static %}
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
+</head>
+<body>
+
+<div class="dashboard-hero">
+    <div class="dashboard-card">
+        <h1>Sign Up</h1>
+        <p>Create an account.</p>
+
+        <form class="auth-form" action="{% url 'account_signup' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button class="btn btn-primary" type="submit">
+                Create Account
+            </button>
+        </form>
+
+        <p class="auth-switch">
+            <a href="{% url 'account_login' %}">
+                Already have an account?
+            </a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
+</head>
+<body>
+
+<div class="dashboard-hero">
+    <div class="dashboard-card">
+        <h1>Welcome to the FlashLearn</h1>
+        <p>Sign in or create an account to access your overview page.</p>
+
+        {% if user.is_authenticated %}
+            <p>You are signed in as {{ user.username }}.</p>
+
+            <div class="auth-actions">
+                <a class="btn btn-primary" href="{% url 'overview' %}">Go to Overview</a>
+            </div>
+        {% else %}
+            <div class="auth-actions">
+                <a class="btn btn-primary" href="{% url 'account_login' %}">Sign in</a>
+                <a class="btn btn-secondary" href="{% url 'account_signup' %}">Sign up</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+</body>
+</html>
