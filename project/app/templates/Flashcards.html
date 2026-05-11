@@ -36,6 +36,10 @@
         <button onclick="flipCard()">Reveal</button>
         <button onclick="nextCard()">Next</button>
 
+        <a href="{% url 'add_card' deck.id %}">
+            <button>Add Card</button>
+        </a>
+
     </div>
 
 </div>

@@ -116,6 +116,33 @@ def create_deck(request):
     # If page is opened normally
     return render(request, 'create_deck.html')
 
+def add_card(request, deck_id):
+
+    # Get selected deck
+    deck = get_object_or_404(Deck, id=deck_id)
+
+    # If form submitted
+    if request.method == "POST":
+
+        # Get form data
+        question = request.POST.get("question")
+        answer = request.POST.get("answer")
+
+        # Create card linked to deck
+        Card.objects.create(
+            deck=deck,
+            question=question,
+            answer=answer
+        )
+
+        # Redirect back to flashcards page
+        return redirect('flashcards', deck_id=deck.id)
+
+    # Load page normally
+    return render(request, 'add_card.html', {
+        'deck': deck
+    })
+
 def user_settings(request: HttpRequest) -> HttpResponse:
     """
     Loads the settings.html file and renders it with the Django template tags. 

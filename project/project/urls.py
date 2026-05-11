@@ -24,6 +24,7 @@ urlpatterns = [
     path('analytics/', views.analytics, name='analytics'),
     path('decks/', views.decks,  name='decks'),
     path('create-deck/', views.create_deck, name='create_deck'),
+    path('deck/<int:deck_id>/add-card/', views.add_card, name='add_card'),
     path('settings/', views.user_settings,  name='settings'),
     path('flashcards/<int:deck_id>/', views.flashcards,  name='flashcards'),
     path('quiz/<int:deck_id>/', views.quiz, name='quiz'),
