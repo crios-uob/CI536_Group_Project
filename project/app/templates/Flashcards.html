@@ -40,41 +40,6 @@
             <button>Add Card</button>
         </a>
 
-        <hr>
-
-        <h3>Manage Cards</h3>
-
-        {% for card in cards %}
-
-        <div class="card-manager">
-
-            <p>
-                <strong>Q:</strong> {{ card.question }}
-            </p>
-
-            <p>
-                <strong>A:</strong> {{ card.answer }}
-            </p>
-
-            <!-- Edit button -->
-            <a href="{% url 'edit_card' card.id %}">
-                <button>Edit</button>
-            </a>
-
-            <!-- Delete button -->
-            <a href="{% url 'delete_card' card.id %}"
-                onclick="return confirm('Delete this card?')">
-
-                <button>Delete</button>
-
-            </a>
-
-        </div>
-
-        <hr>
-
-        {% endfor %}
-
     </div>
 
 </div>

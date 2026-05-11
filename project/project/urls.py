@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('analytics/', views.analytics, name='analytics'),
     path('decks/', views.decks,  name='decks'),
+    path('deck/<int:deck_id>/manage/',views.manage_deck, name='manage_deck'),
     path('create-deck/', views.create_deck, name='create_deck'),
     path('deck/<int:deck_id>/add-card/', views.add_card, name='add_card'),
     path('card/<int:card_id>/edit/', views.edit_card, name='edit_card'),

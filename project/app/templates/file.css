@@ -1,15 +1,9 @@
-
-
 body {
       font-family: Arial, sans-serif;
       background-color: #f0f2f5;
       margin: 0;
       padding: 0;
 }
-
-
-
-
 
 
 .wrapper {
@@ -100,8 +94,9 @@ body {
               border: 1px solid #ddd;
               border-radius: 8px;
               padding: 20px;
-              width: 200px;
+              width: 260px;
 }
-
-
-
+.deck-card a {
+    display: block;
+    margin-top: 8px;
+}

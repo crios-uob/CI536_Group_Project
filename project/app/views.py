@@ -87,13 +87,24 @@ def flashcards(request, deck_id):
     deck = get_object_or_404(Deck, id=deck_id)
     cards = list(
     Card.objects.filter(deck=deck)
-    .values("id", "question", "answer")
-)
-
+    .values("id", "question", "answer"))
     return render(request, 'Flashcards.html', {
         'deck': deck,
         'cards': cards
     })  
+
+def manage_deck(request, deck_id):
+
+    # Get selected deck
+    deck = get_object_or_404(Deck, id=deck_id)
+
+    # Get all cards in deck
+    cards = Card.objects.filter(deck=deck)
+
+    return render(request, 'manage_deck.html', {
+        'deck': deck,
+        'cards': cards
+    })
 
 def create_deck(request):
 
