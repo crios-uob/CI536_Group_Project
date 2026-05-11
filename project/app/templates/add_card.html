@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>Add Card</title>
+    <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h1>CENJ</h1>
+
+        <a href="{% url 'overview' %}">Overview</a>
+        <a href="{% url 'decks' %}">My Decks</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+
+        <h2>Add Card to {{ deck.name }}</h2>
+
+        <!-- Form -->
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <!-- Question -->
+            <label>Question:</label><br>
+            <input type="text" name="question" required><br><br>
+
+            <!-- Answer -->
+            <label>Answer:</label><br>
+            <input type="text" name="answer" required><br><br>
+
+            <!-- Submit -->
+            <button type="submit">Add Card</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

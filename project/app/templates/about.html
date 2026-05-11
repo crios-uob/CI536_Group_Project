@@ -3,7 +3,7 @@
 <head>
     {% load static %}
     <title> CI536 Project</title>
-    <link rel="stylesheet" href="{% static 'app/css/file.css' %}">
+    <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
 </head>
 <body>
 
@@ -12,7 +12,7 @@
 
     <div class = "sidebar">
         <h1> FlashLearn </h1>
-        <a href = "{% url 'file' %}">Overview Page</a>
+        <a href = "{% url 'overview' %}">Overview Page</a>
         <a href = "{% url 'decks' %}">My Decks</a>
         <a href = "{% url 'analytics' %}">Analytics</a>
         <a href = "#">About</a>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>Create Deck</title>
+    <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h1>CENJ</h1>
+
+        <a href="{% url 'overview' %}">Overview</a>
+        <a href="{% url 'decks' %}">My Decks</a>
+        <a href="{% url 'analytics' %}">Analytics</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+
+        <h2>Create New Deck</h2>
+
+        <!-- Form sends POST request -->
+        <form method="POST">
+
+            <!-- Django security token -->
+            {% csrf_token %}
+
+            <!-- Deck Name -->
+            <label>Deck Name:</label><br>
+            <input type="text" name="name" required><br><br>
+
+            <!-- Category -->
+            <label>Category:</label><br>
+            <input type="text" name="category" required><br><br>
+
+            <!-- Submit Button -->
+            <button type="submit">Create Deck</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>
