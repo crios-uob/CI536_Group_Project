@@ -3,8 +3,8 @@
 <head>
     {% load static %}
     <meta charset="UTF-8">
-    <title> CI536 Project</title>
-    <link rel="stylesheet" href="{% static 'app/css/file.css' %}">
+    <title>Analytics</title>
+    <link rel="stylesheet" href="{% static 'app/css/styles.css' %}">
 </head>
 <body>
 
@@ -13,14 +13,13 @@
 
     <div class = "sidebar">
         <h1> FlashLearn </h1>
-        <a href = "{% url 'file' %}">Overview Page</a>
+        <a href = "{% url 'overview' %}">Overview Page</a>
         <a href = "{% url 'decks' %}">My decks</a>
-
         <a href = "{% url 'analytics' %}">Analytics</a>
-        <a href = "#">About</a>
+        <a href = "{% url 'profile' %}">Profile</a>
         <a href = "{% url 'settings' %}">Settings</a>
+        <a href = "{% url 'account_login' %}">Log In</a>
     </div>
-
 
     <div class="main">
         <h2> Analytics</h2>
