@@ -28,6 +28,11 @@ urlpatterns = [
     path('overview/', views.overview,  name='overview'),
     path('analytics/', views.analytics, name='analytics'),
     path('decks/', views.decks,  name='decks'),
+    path('deck/<int:deck_id>/manage/',views.manage_deck, name='manage_deck'),
+    path('create-deck/', views.create_deck, name='create_deck'),
+    path('deck/<int:deck_id>/add-card/', views.add_card, name='add_card'),
+    path('card/<int:card_id>/edit/', views.edit_card, name='edit_card'),
+    path('card/<int:card_id>/delete/', views.delete_card, name='delete_card'),
     path('settings/', views.user_settings,  name='settings'),
 
     path('flashcards/<int:deck_id>/', views.flashcards,  name='flashcards'),

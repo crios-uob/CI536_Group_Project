@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>Manage Deck</title>
+    <link rel="stylesheet" href="{% static 'app/css/file.css' %}">
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h1>FlashLearn</h1>
+
+        <a href="{% url 'file' %}">Overview</a>
+        <a href="{% url 'decks' %}">My Decks</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+
+        <h2>Manage: {{ deck.name }}</h2>
+
+        <!-- Add card button -->
+        <a href="{% url 'add_card' deck.id %}">
+            <button>Add Card</button>
+        </a>
+
+        <hr>
+
+        <!-- Card list -->
+        {% for card in cards %}
+
+        <div class="card-manager">
+
+            <p>
+                <strong>Question:</strong>
+                {{ card.question }}
+            </p>
+
+            <p>
+                <strong>Answer:</strong>
+                {{ card.answer }}
+            </p>
+
+            <!-- Edit -->
+            <a href="{% url 'edit_card' card.id %}">
+                <button>Edit</button>
+            </a>
+
+            <!-- Delete -->
+            <a href="{% url 'delete_card' card.id %}"
+               onclick="return confirm('Delete this card?')">
+
+                <button>Delete</button>
+            </a>
+
+        </div>
+
+        <hr>
+
+        {% empty %}
+
+        <p>No cards in this deck.</p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

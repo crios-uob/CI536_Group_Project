@@ -23,6 +23,9 @@
     <div class="main">
         <h2> My Decks</h2>
         <p>Choose a deck to study or take a quiz.</p>
+        <a href="{% url 'create_deck' %}">
+            <button>Create New Deck</button>
+        </a>
 
         <div class="decks">
         {% for deck in decks %}
@@ -30,9 +33,10 @@
                 <h3>{{ deck.name }}</h3>
 
                 <div class="deck-links">
-                <a href="{% url 'flashcards' deck.id %}">Open Deck</a>
-                <a href="{% url 'quiz_mc' deck.id %}">MC Quiz</a>
-                <a href="{% url 'quiz' deck.id %}">Text Quiz</a>
+                    <a href="{% url 'flashcards' deck.id %}">Open Deck</a>
+                    <a href="{% url 'quiz_mc' deck.id %}">MC Quiz</a>
+                    <a href="{% url 'quiz' deck.id %}">Text Quiz</a>
+                    <a href="{% url 'manage_deck' deck.id %}">Manage Deck</a>
                 </div>
             </div>
         {% empty %}
