@@ -55,7 +55,7 @@
 
                         <!-- Optional: card count -->
                         <p>{{ deck.card_set.count }} cards</p>
-                        <a href="{% url 'flashcards' deck.id %}">Revision</a>
+                        <a href="{% url 'study_deck' deck.id %}">Revision</a>
                     </div>
                 {% empty %}
                     <p>No decks available.</p>
