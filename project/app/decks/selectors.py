@@ -1,13 +1,17 @@
 from django.utils import timezone
-from models import CardProgress
+from datetime import timedelta
+from django.db.models import Q
+from ..models import CardProgress
 
 def get_due_cards(user, deck=None):
-    qs = CardProgress.objects.filter(
+    now = timezone.now()
+
+    due_card_progress = CardProgress.objects.filter(
         user=user,
-        due_at__lte=timezone.now()
+        due_at__lt = now + timedelta(days=1)
     )
 
     if deck:
-        qs = qs.filter(card__deck=deck)
+        due_card_progress = due_card_progress.filter(card__deck=deck)
 
-    return qs.order_by("due_at")
+    return due_card_progress.order_by("due_at")

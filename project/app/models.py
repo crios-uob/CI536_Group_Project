@@ -10,7 +10,11 @@ class Deck(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="decks",
+        null=True,
+        blank=True
     )
+
+    is_default = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -42,6 +46,13 @@ class CardProgress(models.Model):
     HARD = 2
     GOOD = 3
     EASY = 4
+
+    LEARNING_NEW = 0
+    LEARNING_ONE_MIN = 1
+    LEARNING_TEN_MIN = 2
+    GRADUATED = 3  
+
+    learning_step = models.PositiveSmallIntegerField(default=LEARNING_NEW)
 
     RATINGS = [
         (WRONG, 'Wrong'),
