@@ -36,6 +36,8 @@ urlpatterns = [
     path('settings/', views.user_settings,  name='settings'),
 
     path('flashcards/<int:deck_id>/', views.flashcards,  name='flashcards'),
+    path("<int:deck_id>/study/", views.study_deck, name="study_deck"),
+    path("review/<int:progress_id>/", views.submit_review, name="submit_review"),
     path('quiz/<int:deck_id>/', views.quiz, name='quiz'),
     path('quiz-mc/<int:deck_id>/', views.quiz_mc, name='quiz_mc'),
     path('save-result/', views.save_result, name='save_result'),

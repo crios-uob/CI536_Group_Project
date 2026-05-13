@@ -1,10 +1,15 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
+from django.utils import timezone
+from django.db.models import Q
 import json
-from models import Result, Deck, Card, CardProgress
-from decks.services import review_card
+from .models import Result, Deck, Card, CardProgress
+from .decks.services import review_card
+from .decks.selectors import get_due_cards
+from .decks.forms import DeckForm
 
 # Create your views here.
 
@@ -76,9 +81,13 @@ def submit_review(request, progress_id):
         user=request.user,
     )
 
-    rating = int(request.POST["rating"])
-    review_card(progress, rating)
+    if request.method == "POST":
+        rating = int(request.POST["rating"])
+        review_card(progress, rating)
 
+        messages.success(request, "Review saved")
+
+    
     return redirect("study_deck", deck_id=progress.card.deck_id)
 
 def overview(request):
@@ -113,8 +122,6 @@ def decks(request):
     all_decks = Deck.objects.all()
     return render(request, 'decks.html', {'decks': all_decks})
 
-from .models import Deck
-
 def file(request):
     decks = Deck.objects.all()
     return render(request, 'file.html', {'decks': decks})
@@ -142,26 +149,53 @@ def manage_deck(request, deck_id):
         'cards': cards
     })
 
+@login_required
 def create_deck(request):
 
     # If user submitted the form
     if request.method == "POST":
+        form = DeckForm(request.POST)
 
-        # Get form data from HTML inputs
-        name = request.POST.get("name")
-        category = request.POST.get("category")
+        if form.is_valid():
+            deck = form.save(commit=False)
+            deck.owner = request.user
+            deck.save()
 
-        # Create new deck in database
-        Deck.objects.create(
-            name=name,
-            category=category
-        )
+            return redirect('decks', deck_id=deck.id)
 
-        # Redirect user back to decks page
-        return redirect('decks')
+    else:
+        form = DeckForm()
 
     # If page is opened normally
-    return render(request, 'create_deck.html')
+    return render(request, 'create_deck.html', {"form": form})
+
+@login_required
+def study_deck(request, deck_id):
+    deck = get_object_or_404(
+        Deck.objects.filter(
+            Q(owner=request.user) |
+            Q(is_default=True, owner__isnull=True)
+        ),
+        id=deck_id,
+    )
+
+    # Ensure All cards in the given deck have a progress row for the given user
+    for card in deck.cards.all():
+        CardProgress.objects.get_or_create(
+            user=request.user,
+            card=card
+        )
+
+    due_cards = get_due_cards(user=request.user, deck=deck)
+
+    progress = due_cards.first()
+    remaining_count = due_cards.count()
+
+    return render(request, "study_deck.html", {
+        "deck":deck,
+        "progress":progress,
+        "remaining_count": remaining_count
+    })
 
 def add_card(request, deck_id):
 
