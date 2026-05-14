@@ -15,7 +15,7 @@
         <a href = "{% url 'overview' %}">Overview Page</a>
         <a href = "{% url 'decks' %}">My Decks</a>
         <a href = "{% url 'analytics' %}">Analytics</a>
-        <a href = "#">About</a>
+        <a href = "{% url 'about' %}">About</a>
         <a href = "{% url 'settings' %}">Settings</a>
 
         <button id="theme-toggle" onclick="toggleTheme()"> Dark Mode</button>
@@ -37,7 +37,7 @@
                 <div class="team-card">
                     <h4>Charles</h4>
                     <p>Backend Lead</p>
-                    <span>User authentication, db models and API routes</span>
+                    <span>User authentication, Spaced Repetition logic and API routes</span>
                 </div>
                 <div class="team-card">
                     <h4>Jason</h4>
@@ -52,7 +52,7 @@
                 <div class="team-card">
                     <h4>Emma</h4>
                     <p>Hybrid</p>
-                    <span> Flashcard logic and quiz system design </span>
+                    <span> Database models, Flashcard logic, quiz system design </span>
                 </div>
             </div>
 

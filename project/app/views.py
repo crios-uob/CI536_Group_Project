@@ -46,6 +46,9 @@ def dashboard(request: HttpRequest) -> HttpResponse:
     """
     return render(request, 'dashboard.html', {})
 
+def about(request):
+    return render(request, 'about.html')
+
 # Save quiz result asychronously from JavaScript fetch request
 def save_result(request):
     # Only allow POST requests
