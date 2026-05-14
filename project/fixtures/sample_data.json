@@ -4,7 +4,9 @@
     "pk": 1,
     "fields": {
         "name": "Classic Movie Quotes",
-        "category": "Movies"
+        "category": "Movies",
+        "owner": null,
+        "is_default": true
     }
 },
 {
@@ -12,7 +14,9 @@
     "pk": 3,
     "fields": {
         "name": "Catchphrase",
-        "category": "TV"
+        "category": "TV",
+        "owner": null,
+        "is_default": true
     }
 },
 {
@@ -20,7 +24,9 @@
     "pk": 4,
     "fields": {
         "name": "Animation Movie Quotes",
-        "category": "Movies"
+        "category": "Movies",
+        "owner": null,
+        "is_default": true
     }
 },
 {
@@ -28,7 +34,9 @@
     "pk": 5,
     "fields": {
         "name": "Animation Movie Quotes II",
-        "category": "Movies"
+        "category": "Movies",
+        "owner": null,
+        "is_default": true
     }
 },
 {
@@ -36,7 +44,9 @@
     "pk": 6,
     "fields": {
         "name": "Classic Movie Quotes II",
-        "category": "Movies"
+        "category": "Movies",
+        "owner": null,
+        "is_default": true
     }
 },
 {
@@ -44,7 +54,9 @@
     "pk": 7,
     "fields": {
         "name": "Catchphrase II",
-        "category": "TV"
+        "category": "TV",
+        "owner": null,
+        "is_default": true
     }
 },
 {

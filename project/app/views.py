@@ -37,16 +37,6 @@ def analytics(request: HttpRequest) -> HttpResponse:
     """
     return render(request, 'analytics.html', {})
 
-def save_result(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-
-        score = data.get("score")
-        total = data.get("total")
-        deck_id = data.get("deck_id")
-
-        deck = Deck.objects.get(id=deck_id)
-
 def dashboard(request: HttpRequest) -> HttpResponse:
     """
     Loads the dashboard.html file and renders it with the Django template tags. 
@@ -56,22 +46,29 @@ def dashboard(request: HttpRequest) -> HttpResponse:
     """
     return render(request, 'dashboard.html', {})
 
+# Save quiz result asychronously from JavaScript fetch request
 def save_result(request):
+    # Only allow POST requests
     if request.method == "POST":
+        # Convert incoming JSON data to Python dictionary
         data = json.loads(request.body)
 
+        # Extract quiz data from frontend
         score = data.get("score")
         total = data.get("total")
         deck_id = data.get("deck_id")
 
+        # Retrieve associated deck
         deck = Deck.objects.get(id=deck_id)
+
+        # Store quiz result in database
         Result.objects.create(
             user=request.user,
             deck=deck,
             score=score,
             total=total
         )
-        
+        # Return success response to frontend
         return JsonResponse({"status": "success"})
 
 def submit_review(request, progress_id):
@@ -122,10 +119,6 @@ def decks(request):
     all_decks = Deck.objects.all()
     return render(request, 'decks.html', {'decks': all_decks})
 
-def file(request):
-    decks = Deck.objects.all()
-    return render(request, 'file.html', {'decks': decks})
-
 def flashcards(request, deck_id):
     deck = get_object_or_404(Deck, id=deck_id)
     cards = list(
@@ -171,6 +164,10 @@ def create_deck(request):
 
 @login_required
 def study_deck(request, deck_id):
+
+    # Allow users to access:
+    # 1. Their own decks
+    # 2. Default decks created by admin (owner is null)
     deck = get_object_or_404(
         Deck.objects.filter(
             Q(owner=request.user) |
@@ -179,18 +176,23 @@ def study_deck(request, deck_id):
         id=deck_id,
     )
 
-    # Ensure All cards in the given deck have a progress row for the given user
+    # Ensure All cards in the given deck have a progress row for this user
+    # get_or_create prevents duplicate progress rows
     for card in deck.cards.all():
         CardProgress.objects.get_or_create(
             user=request.user,
             card=card
         )
 
+    # Get due cards for this user and deck
     due_cards = get_due_cards(user=request.user, deck=deck)
 
+    # Get next due card
     progress = due_cards.first()
+    # Count remaining due cards for display
     remaining_count = due_cards.count()
 
+    # Load study page with next due card and remaining count
     return render(request, "study_deck.html", {
         "deck":deck,
         "progress":progress,

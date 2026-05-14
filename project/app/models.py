@@ -3,9 +3,12 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
 
+# Stores flashcard decks created by users. Each deck has a name, category, and an owner (the user who created it).
 class Deck(models.Model):
     name = models.CharField(max_length=100)
     category= models.CharField(max_length=50)
+
+    # Deck creator (null for built-in decks)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -41,6 +44,7 @@ class Result(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.deck.name} - {self.score}"
 
+# Tracks individual user progress for spaced repetition learning
 class CardProgress(models.Model):
     WRONG = 1
     HARD = 2
@@ -74,10 +78,12 @@ class CardProgress(models.Model):
     interval_days = models.PositiveIntegerField(default=0)
     repetitions = models.PositiveIntegerField(default=0)
 
+    # Determines when card should next appear
     due_at = models.DateTimeField(default=timezone.now)
     last_reviewed_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
+        # Ensures one progress row per user per card
         unique_together = ('user','card')
 
     def is_due(self) -> bool:
