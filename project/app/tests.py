@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
-from app.views import analytics
+from app.views import analytics, save_result, quiz_mc, quiz, decks, file, flashcards, user_settings
 from app.models import Deck, Card, Result
 
 #user login tests
@@ -10,7 +10,7 @@ class userloginTestCase(TestCase):
         response = self.client.get('/analytics')
         self.assertEqual(response.status_code, 302) #checking if equal
 
-    def useraccess(self):
+    def useraccess(self): #Create models to test
         user = User.objects.create_user(
             username='testuser',
             password='password'
@@ -25,6 +25,7 @@ class userloginTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
 #Create models to test
+#views.py tests
 class deckTestCase(TestCase):
     def deckTestCase(self):
         self.deck = Deck.objects.create(
@@ -107,3 +108,110 @@ class resultTestCase(TestCase):
             10
         )
     
+#views.py test cases
+class analyticsTestCase(TestCase):
+    def analyticsTestCase(self):
+        self.user = User.objects.create_user(
+        #creating test user
+        username='testuser',
+        password='password1',
+    )
+    
+    #for users with no login
+    def nologinrequirement_test(self):
+        response = self.client.get(
+            reverse('analytics')
+        )
+        self.assertEqual(response.status_code, 302)
+
+    #for users with login
+    def loginrequirement_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        reponse = self.client.get(
+            reverse('analytics')
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    #accuracy calc
+    def accuracy_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        Result.objects.create(
+            user=self.user,
+            score=5,
+            total=10
+        )
+
+        response = self.client.get(
+            reverse('analytics')
+        )
+
+        self.assertEqual(
+            response.context['accuracy'],
+            50.0
+        )
+
+    #empty results
+    def empty_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        response = self.client.get(
+            reverse('analytics')
+        )
+
+        self.assertEqual(
+            response.context['total_quizzes'],
+            0
+        )
+
+        self.assertEqual(
+            response.context['accuracy'],
+            0
+        )
+
+    #labels test
+    def labels_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        response = self.client.get(
+            reverse('analytics')
+        )
+
+        self.assertTrue(
+            len(response.context['labels']) > 0
+        )
+    
+    #scores test
+    def scores_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        Result.objects.create(
+            user=self.user,
+            score=6,
+            total=10
+        )       
+
+        response = self.client.get(
+            reverse('analytics')
+        )
+
+        self.assertTrue(
+            len(response.context['scores']) > 0
+        )
