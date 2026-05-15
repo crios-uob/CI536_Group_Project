@@ -64,8 +64,8 @@ def analytics(request: HttpRequest) -> HttpResponse:
         "total_correct": total_correct,
         "total_questions": total_questions,
         "accuracy": accuracy,
-        "labels": labels,
-        "scores": scores,
+        "labels": json.dumps(labels),
+        "scores": json.dumps(scores),
     }
 
     return render(request, 'analytics.html', context)
