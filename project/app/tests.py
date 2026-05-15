@@ -1,3 +1,536 @@
 from django.test import TestCase
+from django.urls import reverse
+from django.contrib.auth.models import User
+from app.views import analytics, save_result, quiz_mc, quiz, decks, file, flashcards, user_settings
+from app.models import Deck, Card, Result
+import json
 
-# Create your tests here.
+#user login tests
+class userloginTestCase(TestCase):
+    def login(self): #creates a test instance of model
+        response = self.client.get('/analytics')
+        self.assertEqual(response.status_code, 302) #checking if equal
+
+    def useraccess(self): #Create models to test
+        user = User.objects.create_user(
+            username='testuser',
+            password='password'
+        )
+
+        self.client.login(
+            username='testuser',
+            password='password123'
+        )
+
+        response = self.client.get('/analytics')
+        self.assertEqual(response.status_code, 200)
+
+#Create models to test
+#views.py tests
+class deckTestCase(TestCase):
+    def deckTestCase(self):
+        self.deck = Deck.objects.create(
+            name="biology",
+            category="science"
+        )
+
+    def test_deck_creation(self):
+        self.assertEqual(
+            self.deck.name,
+            "biology"
+        )
+
+    def test_deck_string(self):
+        self.assertEqual(
+            str(self.deck),
+            "science"
+        )
+
+    def test_name_max_length(self):
+        max_length = self.deck._meta.get_field(
+            'name'
+        ).max_length
+
+        self.assertEqual(max_length, 100)
+    
+    def test_category_max_length(self):
+        max_length = self.deck._meta.get_field(
+            'category'
+        ).max_length
+
+        self.assertEqual(max_length, 50)
+
+class cardTestCase(TestCase):
+    def cardTestCase(self):
+        self.card = Card.objects.create(
+            name="maths",
+            category="subject"
+        )
+
+        self.card = Card.objects.create(
+            question="1 + 1",
+            answer="2",
+            deck=self.deck
+        )
+
+    def test_card_creation(self):
+        self.assertEqual(
+            self.card.answer,
+            "2"
+        )
+
+    def test_card_subject(self):
+        self.assertEqual(
+            self.card.deck.name,
+            "maths"
+        )
+
+    def test_card_string(self):
+        self.assertEqual(
+            str(self.card),
+            "1 + 1"
+        )
+
+class resultTestCase(TestCase):
+    def resultTestCase(self):
+        self.result = Result.objects.create(
+            score=5,
+            total=10
+        )
+
+    def test_result_creation(self):
+        self.assertEqual(
+            self.result.score,
+            5
+        )
+
+        self.assertEqual(
+            self.result.total,
+            10
+        )
+    
+#views.py test cases
+class analyticsTestCase(TestCase):
+    def analyticsTestCase(self):
+        self.user = User.objects.create_user(
+        #creating test user
+        username='testuser',
+        password='password1',
+    )
+    
+    #for users with no login
+    def nologinrequirement_test(self):
+        response = self.client.get(
+            reverse('analytics')
+        )
+        self.assertEqual(response.status_code, 302)
+
+    #for users with login
+    def loginrequirement_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        reponse = self.client.get(
+            reverse('analytics')
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    #accuracy calc
+    def accuracy_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        Result.objects.create(
+            user=self.user,
+            score=5,
+            total=10
+        )
+
+        response = self.client.get(
+            reverse('analytics')
+        )
+
+        self.assertEqual(
+            response.context['accuracy'],
+            50.0
+        )
+
+    #empty results
+    def empty_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        response = self.client.get(
+            reverse('analytics')
+        )
+
+        self.assertEqual(
+            response.context['total_quizzes'],
+            0
+        )
+
+        self.assertEqual(
+            response.context['accuracy'],
+            0
+        )
+
+    #labels test
+    def labels_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        response = self.client.get(
+            reverse('analytics')
+        )
+
+        self.assertTrue(
+            len(response.context['labels']) > 0
+        )
+    
+    #scores test
+    def scores_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        Result.objects.create(
+            user=self.user,
+            score=6,
+            total=10
+        )       
+
+        response = self.client.get(
+            reverse('analytics')
+        )
+
+        self.assertTrue(
+            len(response.context['scores']) > 0
+        )
+
+class save_resultTestCase(TestCase):
+    def save_resultTestCase(self):
+        self.user = User.objects.create_user(
+            #creating test user
+            username='testuser',
+            password='password1',
+            )
+        
+        #test deck
+        self.deck = Deck.objects.create(
+            name='biology',
+            category='science'
+            )
+        
+    #check POST request works
+    def result_saved(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        data = {
+            "score": 5,
+            "total": 10,
+            "deck_id": self.deck.id
+        }
+
+        response = self.client.post(
+            reverse('save_result'),
+            data=json.dumps(data),
+            content_type='application/json/'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            Result.objects.count(),
+            1
+        )
+
+    #json success response
+    def success_rsponse_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+    
+        data = {
+            "score": 5,
+            "total": 10,
+            "deck_id": self.deck.id
+        }
+
+        response = self.client.post(
+            reverse('save_result'),
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+
+        self.assertJSONEqual(
+            response.content,
+            {"status": "success"}
+        )
+    
+    #correct user test
+    def correct_user_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        data = {
+            "score": 5,
+            "total": 10,
+            "deck_id": self.deck.id
+        }
+        self.client.post(
+            reverse('save_result'),
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+
+        result = Result.objects.first()
+        self.assertEqual(
+            result.user,
+            self.user
+        )
+
+    #invalid deck ID test
+    def invalid_deck_id_test(self):
+         self.client.login(
+            username='testuser',
+            password='password1'
+        )
+         data = {
+            "score": 5,
+            "total": 10,
+            "deck_id": self.deck.id
+        }
+         response = self.client.post(
+            reverse('save_result'),
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+        
+         self.assertEqual(
+             response.status_code,
+             404
+         )
+        
+    #get request reject test
+    def get_request_reject_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        response = self.client.get(
+            reverse('save_result')
+        )
+
+        self.assertEqual(
+            response.status_code,
+            405
+        )
+
+class quiz_mcTestCase(TestCase):
+    def quiz_mcTestCase(self):
+        #test deck
+        self.user = Deck.objects.create_user(
+            #creating test user
+            question='biology',
+            category='science',
+            )
+        #test cards
+        self.card1 = Card.objects.create(
+            deck=self.deck,
+            question="what is a chloroplast?",
+            answer="plant cell"
+        )
+
+        self.card2 = Card.objects.create(
+            deck=self.deck,
+            question="what is dna shape?",
+            answer="double helix"
+        )
+
+    #page load test
+    def page_load_test(self):
+        response = self.client.get(
+            reverse('quiz_mc'), args=[self.deck.id]
+        )
+        self.assertEqual(
+            response.status_code,
+            200
+        )
+
+    #passing cards to html
+    def context_card_test(self):
+        response=self.client.get(
+            reverse('quiz_mc', args=[self.deck.id])
+        )
+        self.assertEqual(
+            len(response.context['cards']),
+            2
+        )
+
+    #correct deck
+    def correct_deck(self):
+        response = self.client.get(
+            reverse('quiz_mc', args=[self.deck.id])
+        )
+
+        self.assertEqual(
+            response.context['deck'],
+            self.deck
+        )
+
+    #correct html
+    def quizmc_template_test(self):
+        response = self.client.get(
+            reverse('quiz_mc', args=[self.deck.id])
+        )
+        self.assertTemplateUsed(
+            response,
+            'quiz_mc.html'
+        )
+
+#Quiz view test
+class quiz_viewTestCase(TestCase):
+    def quiz_viewTestCase():
+            self.deck=Deck.objects.create(
+            name="biology",
+            category="science"
+        )
+    
+    #does page load
+    def loadpagetest(self):
+        response = self.client.get(
+            reverse('quiz', args=[self.deck.id])
+        )
+        self.assertTemplateUsed(
+            response,
+            'quiz.html'
+        )
+
+#Flashcards test
+class flashcardsTestCase(TestCase):
+    def flashcardsTestCase(self):
+        self.deck = Deck.objects.create(
+            name="biology",
+            category="science"
+        )
+    
+    #does it load
+    def flashcardload_test(self):
+        response = self.client.get(
+            reverse('flashcards', args=[self.deck.id])
+        )
+        self.assertEqual(
+            response.status_code,
+            200
+        )
+    
+    #html used test
+    def flashtemplate_test(self):
+        response = self.client.get(
+            reverse('flashcards', args=[self.deck.id])
+        )
+        self.assertTemplateUsed(
+            response,
+            'Flashcards.html'
+        )
+
+#Decks views
+class decksviewTestCase(TestCase):
+    def decksviewTestCase(self):
+        Deck.objects.create(
+            name="biology",
+            category="science"
+        )
+
+        Deck.objects.create(
+            name="chemistry",
+            category="science"
+        )
+    
+    #does it load
+    def decksviewload_test(self):
+        response = self.client.get(
+            reverse('decks')
+        )
+        self.assertEqual(
+            response.status_code,
+            200
+        )
+
+    #test context
+    def deckscontext_test(self):
+        response = self.client.get(
+            reverse('decks')
+        )
+        self.assertEqual(
+            len(response.context['decks']),
+            2
+        )
+
+    #html work test
+    def deckstemplate_test(self):
+        response = self.client.get(
+            reverse('decks')
+        )
+        self.assertTemplateUsed(
+            response,
+            'decks.html'
+        )
+
+#File view test
+class fileviewTestCase(TestCase):
+    def fileviewTestCase(self):
+        response = self.client.get(
+            reverse('file')
+        )
+        self.assertEqual(
+            response.status_code,
+            200
+        )
+
+    def filetemplate_test(self):
+        response = self.client.get(
+            reverse('file')
+        )
+
+        self.assertTemplateUsed(
+            response,
+            'file.html'
+        )
+
+#Settings view test
+class settingsviewTestCase(TestCase):
+    def settingsviewTestCase(self):
+        response = self.client.get(
+            reverse('settings')
+        )
+        self.assertEqual(
+            response.status_code,
+            200
+        )
+    
+    #html template
+    def settingstemplate_test(self):
+        response = self.client.get(
+            reverse('settings')
+        )
+        self.assertTemplateUsed(
+            response,
+            'settings.html'
+        )
