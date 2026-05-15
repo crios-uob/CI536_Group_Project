@@ -29,7 +29,7 @@ def analytics(request: HttpRequest) -> HttpResponse:
     #For accuracy % calcs
     total_correct = sum(result.score for result in results)
     total_questions = sum(result.total for result in results)
-    accuracy = 0
+    accuracy = 0 #default
 
     if total_questions > 0:
         accuracy = round((total_correct / total_questions) * 100, 2) #accuracy % to 2 d.p.
