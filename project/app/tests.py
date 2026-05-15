@@ -344,4 +344,193 @@ class save_resultTestCase(TestCase):
 
 class quiz_mcTestCase(TestCase):
     def quiz_mcTestCase(self):
-        
+        #test deck
+        self.user = Deck.objects.create_user(
+            #creating test user
+            question='biology',
+            category='science',
+            )
+        #test cards
+        self.card1 = Card.objects.create(
+            deck=self.deck,
+            question="what is a chloroplast?",
+            answer="plant cell"
+        )
+
+        self.card2 = Card.objects.create(
+            deck=self.deck,
+            question="what is dna shape?"
+            answer="double helix"
+        )
+
+    #page load test
+    def page_load_test(self):
+        response = self.client.get(
+            reverse('quiz_mc'), args=[self.deck.id]
+        )
+        self.assertEqual(
+            response.status_code,
+            200
+        )
+
+    #passing cards to html
+    def context_card_test(self):
+        response=self.client.get(
+            reverse('quiz_mc', args=[self.deck.id])
+        )
+        self.assertEqual(
+            len(response.context['cards']),
+            2
+        )
+
+    #correct deck
+    def correct_deck(self):
+        response = self.client.get(
+            reverse('quiz_mc', args=[self.deck.id])
+        )
+
+        self.assertEqual(
+            response.context['deck'],
+            self.deck
+        )
+
+    #correct html
+    def quizmc_template_test(self):
+        response = self.client.get(
+            reverse('quiz_mc', args=[self.deck.id])
+        )
+        self.assertTemplateUsed(
+            response,
+            'quiz_mc.html'
+        )
+
+#Quiz view test
+class quiz_viewTestCase(TestCase):
+    def quiz_viewTestCase():
+            self.deck=Deck.objects.create(
+            name="biology",
+            category="science"
+        )
+    
+    #does page load
+    def loadpagetest(self):
+        response = self.client.get(
+            reverse('quiz', args=[self.deck.id])
+        )
+        self.assertTemplateUsed(
+            response,
+            'quiz.html'
+        )
+
+#Flashcards test
+class flashcardsTestCase(TestCase):
+    def flashcardsTestCase(self):
+        self.deck = Deck.objects.create(
+            name="biology",
+            category="science"
+        )
+    
+    #does it load
+    def flashcardload_test(self):
+        response = self.client.get(
+            reverse('flashcards', args=[self.deck.id])
+        )
+        self.assertEqual(
+            response.status_code,
+            200
+        )
+    
+    #html used test
+    def flashtemplate_test(self):
+        response = self.client.get(
+            reverse('flashcards', args=[self.deck.id])
+        )
+        self.assertTemplateUsed(
+            response,
+            'Flashcards.html'
+        )
+
+#Decks views
+class decksviewTestCase(TestCase):
+    def decksviewTestCase(self):
+        Deck.objects.create(
+            name="biology",
+            category="science"
+        )
+
+        Deck.objects.create(
+            name="chemistry",
+            category="science"
+        )
+    
+    #does it load
+    def decksviewload_test(self):
+        response = self.client.get(
+            reverse('decks')
+        )
+        self.assertEqual(
+            response.status_code,
+            200
+        )
+
+    #test context
+    def deckscontext_test(self):
+        response = self.client.get(
+            reverse('decks')
+        )
+        self.assertEqual(
+            len(response.context['decks']),
+            2
+        )
+
+    #html work test
+    def deckstemplate_test(self):
+        response = self.client.get(
+            reverse('decks')
+        )
+        self.assertTemplateUsed(
+            response,
+            'decks.html'
+        )
+
+#File view test
+class fileviewTestCase(TestCase):
+    def fileviewTestCase(self):
+        response = self.client.get(
+            reverse('file')
+        )
+        self.assertEqual(
+            response.status_code,
+            200
+        )
+
+    def filetemplate_test(self):
+        response = self.client.get(
+            reverse('file')
+        )
+
+        self.assertTemplateUsed(
+            response,
+            'file.html'
+        )
+
+#Settings view test
+class settingsviewTestCase(TestCase):
+    def settingsviewTestCase(self):
+        response = self.client.get(
+            reverse('settings')
+        )
+        self.assertEqual(
+            response.status_code,
+            200
+        )
+    
+    #html template
+    def settingstemplate_test(self):
+        response = self.client.get(
+            reverse('settings')
+        )
+        self.assertTemplateUsed(
+            response,
+            'settings.html'
+        )
