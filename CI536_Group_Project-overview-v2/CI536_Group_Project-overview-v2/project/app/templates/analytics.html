@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title> CI536 Project</title>
+    <link rel="stylesheet" href="{% static 'app/css/file.css' %}">
+</head>
+<body>
+
+
+<div class="wrapper">
+
+    <div class = "sidebar">
+        <h1> FlashLearn </h1>
+        <a href = "{% url 'file' %}">Overview Page</a>
+        <a href = "{% url 'decks' %}">My decks</a>
+
+        <a href = "{% url 'analytics' %}">Analytics</a>
+        <a href = "#">About</a>
+        <a href = "{% url 'settings' %}">Settings</a>
+    </div>
+
+
+    <div class="main">
+        <h2> Analytics</h2>
+        <p>Have a glance. This is a summary of your study progress.</p>
+
+        <div class="stats">
+            <div class="stat-box">
+                <h3>Total Quizzes Taken</h3>
+                <p> 24 </p>
+            </div>
+            <div class="stat-box">
+                <h3>Average Score</h3>
+                <p> 24% </p>
+            </div>
+            <div class="stat-box">
+                <h3>Accuracy</h3>
+                <p> 68% </p>
+            </div>
+            <div class="stat-box">
+                <h3>Cards Studied</h3>
+                <p> 14 </p>
+            </div>
+        </div>
+
+        <h2>Recent Scores</h2>
+        <!-- TODO (backend): Insert scores table here
+             Display: date, deck, name, score per quiz result.
+             Result : user_id, score, date
+         -->
+
+
+
+    </div>
+
+</div>
+</body>
+</html>

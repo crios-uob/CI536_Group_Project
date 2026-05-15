@@ -21,7 +21,7 @@ class Deck(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 class Card(models.Model):
     deck = models.ForeignKey(
         Deck, 
@@ -33,7 +33,7 @@ class Card(models.Model):
 
     def __str__(self):
         return self.question
-    
+
 class Result(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     deck = models.ForeignKey(Deck, on_delete=models.CASCADE)
