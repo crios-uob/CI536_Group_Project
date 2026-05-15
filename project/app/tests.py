@@ -316,7 +316,7 @@ class save_resultTestCase(TestCase):
             "deck_id": self.deck.id
         }
          response = self.client.post(
-            reverse('save_result')
+            reverse('save_result'),
             data=json.dumps(data),
             content_type='application/json'
         )
@@ -359,7 +359,7 @@ class quiz_mcTestCase(TestCase):
 
         self.card2 = Card.objects.create(
             deck=self.deck,
-            question="what is dna shape?"
+            question="what is dna shape?",
             answer="double helix"
         )
 
