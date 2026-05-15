@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.functions import TruncDate
 from django.db.models import Avg
 import json
-from .models import Result, Deck, Card, CardAttempt, CardProgress
+from .models import Result, Deck, Card, CardProgress
 from .decks.services import review_card
 from .decks.selectors import get_due_cards
 from .decks.forms import DeckForm
