@@ -568,7 +568,7 @@
     "pk": 60,
     "fields": {
         "deck": 4,
-        "question": "\"I donÆt like big moving things that are moving towards me\"",
+        "question": "\"I don't like big moving things that are moving towards me\"",
         "answer": "Monsters Inc"
     }
 },
@@ -595,7 +595,7 @@
     "pk": 63,
     "fields": {
         "deck": 4,
-        "question": "\"I donÆt want to survive. I want to live\"",
+        "question": "\"I don't want to survive. I want to live\"",
         "answer": "WALL-E"
     }
 },
@@ -703,7 +703,7 @@
     "pk": 75,
     "fields": {
         "deck": 5,
-        "question": "\"YouÆre never too small to make a difference\"",
+        "question": "\"You are never too small to make a difference\"",
         "answer": "Horton Hears a Who"
     }
 },
@@ -712,7 +712,7 @@
     "pk": 76,
     "fields": {
         "deck": 6,
-        "question": "\"Supercalifragilisticexpialidocious!ö",
+        "question": "\"Supercalifragilisticexpialidocious!\"",
         "answer": "Mary Poppins"
     }
 },
@@ -722,7 +722,7 @@
     "fields": {
         "deck": 5,
         "question": "\"Mirror, mirror on the wall, who is the fairest one of all?\"",
-        "answer": "Snow White and the Seven Dwarfs\""
+        "answer": "Snow White and the Seven Dwarfs"
     }
 },
 {
@@ -973,7 +973,7 @@
     "pk": 107,
     "fields": {
         "deck": 3,
-        "question": "\"Legendùwait for itùdary!\"",
+        "question": "\"Legen-wait for it-dary!\"",
         "answer": "How I Met Your Mother"
     }
 },

@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
+from django.db.models import Sum
+from datetime import timedelta
 from django.utils import timezone
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -123,9 +125,46 @@ def submit_review(request, progress_id):
     
     return redirect("study_deck", deck_id=progress.card.deck_id)
 
+@login_required
 def overview(request):
     decks = Deck.objects.all()
-    return render(request, 'overview.html', {'decks': decks})
+
+    # all results for this user
+    results = Result.objects.filter(user=request.user)
+
+    # Cards studied = total cards attempted (from results)
+    cards_studied = results.aggregate(total=Sum("total"))["total"] or 0
+
+    # Accuracy
+    total_correct = sum(r.score for r in results)
+    total_questions = sum(r.total for r in results)
+
+    accuracy = 0
+    if total_questions > 0:
+        accuracy = round((total_correct / total_questions) * 100)
+
+    # Simple streak system (based on daily activity)
+    today = timezone.now().date()
+    days_active = set(
+        results.values_list("date_taken", flat=True)
+    )
+
+    streak = 0
+    check_day = today
+
+    while True:
+        if any(d.date() == check_day for d in days_active):
+            streak += 1
+            check_day -= timedelta(days=1)
+        else:
+            break
+
+    return render(request, "overview.html", {
+        "decks": decks,
+        "cards_studied": cards_studied,
+        "accuracy": accuracy,
+        "streak": streak,
+    })
 
 def quiz_mc(request, deck_id):
     deck = get_object_or_404(Deck, id=deck_id)
