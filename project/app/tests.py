@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from app.views import analytics, save_result, quiz_mc, quiz, decks, file, flashcards, user_settings
 from app.models import Deck, Card, Result
+import json
 
 #user login tests
 class userloginTestCase(TestCase):
@@ -215,3 +216,132 @@ class analyticsTestCase(TestCase):
         self.assertTrue(
             len(response.context['scores']) > 0
         )
+
+class save_resultTestCase(TestCase):
+    def save_resultTestCase(self):
+        self.user = User.objects.create_user(
+            #creating test user
+            username='testuser',
+            password='password1',
+            )
+        
+        #test deck
+        self.deck = Deck.objects.create(
+            name='biology',
+            category='science'
+            )
+        
+    #check POST request works
+    def result_saved(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        data = {
+            "score": 5,
+            "total": 10,
+            "deck_id": self.deck.id
+        }
+
+        response = self.client.post(
+            reverse('save_result'),
+            data=json.dumps(data),
+            content_type='application/json/'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            Result.objects.count(),
+            1
+        )
+
+    #json success response
+    def success_rsponse_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+    
+        data = {
+            "score": 5,
+            "total": 10,
+            "deck_id": self.deck.id
+        }
+
+        response = self.client.post(
+            reverse('save_result'),
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+
+        self.assertJSONEqual(
+            response.content,
+            {"status": "success"}
+        )
+    
+    #correct user test
+    def correct_user_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        data = {
+            "score": 5,
+            "total": 10,
+            "deck_id": self.deck.id
+        }
+        self.client.post(
+            reverse('save_result'),
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+
+        result = Result.objects.first()
+        self.assertEqual(
+            result.user,
+            self.user
+        )
+
+    #invalid deck ID test
+    def invalid_deck_id_test(self):
+         self.client.login(
+            username='testuser',
+            password='password1'
+        )
+         data = {
+            "score": 5,
+            "total": 10,
+            "deck_id": self.deck.id
+        }
+         response = self.client.post(
+            reverse('save_result')
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+        
+         self.assertEqual(
+             response.status_code,
+             404
+         )
+        
+    #get request reject test
+    def get_request_reject_test(self):
+        self.client.login(
+            username='testuser',
+            password='password1'
+        )
+
+        response = self.client.get(
+            reverse('save_result')
+        )
+
+        self.assertEqual(
+            response.status_code,
+            405
+        )
+
+class quiz_mcTestCase(TestCase):
+    def quiz_mcTestCase(self):
+        
